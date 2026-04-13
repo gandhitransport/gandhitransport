@@ -22,10 +22,18 @@
     html { scroll-behavior: smooth; }
     body {
       font-family: 'DM Sans', sans-serif;
+      font-size: 16px;
       background: var(--nuit);
       color: var(--blanc);
       min-height: 100vh;
       overflow-x: hidden;
+    }
+    @media (max-width: 600px) {
+      body { font-size: 14px; }
+      h1 { font-size: 1.5rem !important; }
+      h2 { font-size: 1.3rem !important; }
+      button, .btn-primary, .btn-secondary { font-size: 1rem; padding: 12px 16px; }
+      input, select, textarea { font-size: 16px !important; }
     }
 
     /* ── NAV ── */
@@ -540,17 +548,25 @@
       </div>
       <button class="btn-primary" style="width:100%" onclick="goToStep1()">Continuer →</button>
     </div>
-    <!-- Étape 1 : téléphone -->
+    <!-- Étape 1 : infos personnelles -->
     <div id="step1" style="display:none">
       <div class="step-indicator">
         <div class="step-dot done"></div><div class="step-dot active"></div>
-        <div class="step-dot" id="dot2c" style="display:none"></div>
+        <div class="step-dot" id="dot2c"></div>
         <div class="step-dot" id="dot3c" style="display:none"></div>
       </div>
-      <h2>Votre numéro</h2>
-      <p class="modal-sub">Un code de vérification sera envoyé par SMS.</p>
+      <h2>Vos informations</h2>
+      <p class="modal-sub">Remplissez vos coordonnées pour créer votre compte.</p>
       <div class="form-group">
-        <label>Numéro de téléphone (Sénégal)</label>
+        <label>Prénom *</label>
+        <input type="text" id="prenomInput" placeholder="ex : Moussa" />
+      </div>
+      <div class="form-group">
+        <label>Nom *</label>
+        <input type="text" id="nomInput" placeholder="ex : Diallo" />
+      </div>
+      <div class="form-group">
+        <label>Numéro de téléphone *</label>
         <input type="tel" id="phoneInput" placeholder="+221 77 000 00 00" />
       </div>
       <button class="btn-primary" style="width:100%;margin-top:8px" onclick="sendSMS()">Recevoir le code SMS →</button>
@@ -573,7 +589,7 @@
       <button class="btn-primary" style="width:100%;margin-top:20px" onclick="verifyOTP()">Vérifier le code →</button>
       <p style="text-align:center;margin-top:12px;font-size:0.8rem;color:var(--gris)">Code de démo : <strong style="color:var(--terre)">1234</strong></p>
     </div>
-    <!-- Étape 3 : uploads (conducteur seulement) -->
+    <!-- Étape 3 : documents (conducteur seulement) -->
     <div id="step3" style="display:none">
       <div class="step-indicator">
         <div class="step-dot done"></div><div class="step-dot done"></div>
@@ -582,12 +598,12 @@
       <h2>Documents requis</h2>
       <p class="modal-sub">Uploadez vos pièces pour activer votre compte conducteur.</p>
       <div class="form-group">
-        <label>📄 CNI (recto/verso)</label>
+        <label>📄 Photo d'identité (recto)</label>
         <div class="upload-zone" id="cniZone">
           <input type="file" accept="image/*" onchange="fileUploaded('cniZone', this)" />
           <div class="upload-icon">🪪</div>
           <strong>Appuyer pour choisir</strong>
-          <p>CNI recto + verso</p>
+          <p>CNI ou passeport — recto uniquement</p>
         </div>
       </div>
       <div class="form-group">
@@ -596,7 +612,7 @@
           <input type="file" accept="image/*" onchange="fileUploaded('permisZone', this)" />
           <div class="upload-icon">📋</div>
           <strong>Appuyer pour choisir</strong>
-          <p>Permis de conduire</p>
+          <p>Photo de votre permis</p>
         </div>
       </div>
       <div class="form-group">
@@ -641,7 +657,11 @@
   }
 
   function sendSMS() {
+    const prenom = document.getElementById('prenomInput').value.trim();
+    const nom = document.getElementById('nomInput').value.trim();
     const phone = document.getElementById('phoneInput').value.trim();
+    if (!prenom) { notify('Entrez votre prénom', 'error'); return; }
+    if (!nom) { notify('Entrez votre nom', 'error'); return; }
     if (!phone) { notify('Entrez votre numéro de téléphone', 'error'); return; }
     show('step1', false); show('step2', true);
     if (currentRole === 'conducteur') {
