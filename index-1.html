@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gandhi – Accueil</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: Arial, sans-serif; font-size: 16px; background: #f5f5f5; color: #333; }
+    header { background: #1a6b3c; color: white; padding: 16px 20px; text-align: center; }
+    header h1 { font-size: 1.8rem; }
+    header p { font-size: 0.95rem; margin-top: 4px; opacity: 0.85; }
+    .tabs { display: flex; justify-content: center; gap: 12px; padding: 20px; }
+    .tab-btn {
+      padding: 12px 28px; border: 2px solid #1a6b3c; background: white;
+      color: #1a6b3c; border-radius: 25px; font-size: 1rem; cursor: pointer;
+      font-weight: bold; transition: all 0.2s;
+    }
+    .tab-btn.active, .tab-btn:hover { background: #1a6b3c; color: white; }
+    .section { display: none; max-width: 520px; margin: 0 auto; padding: 0 20px 40px; }
+    .section.active { display: block; }
+    .section h2 { font-size: 1.4rem; margin-bottom: 20px; color: #1a6b3c; }
+    label { display: block; font-size: 0.9rem; color: #555; margin-bottom: 4px; margin-top: 14px; }
+    input[type="text"], input[type="tel"], input[type="file"] {
+      width: 100%; padding: 11px 14px; border: 1.5px solid #ccc;
+      border-radius: 8px; font-size: 16px; background: white;
+    }
+    input:focus { outline: none; border-color: #1a6b3c; }
+    button {
+      margin-top: 18px; width: 100%; padding: 13px;
+      background: #1a6b3c; color: white; border: none;
+      border-radius: 8px; font-size: 1rem; font-weight: bold;
+      cursor: pointer; transition: background 0.2s;
+    }
+    button:hover { background: #145530; }
+    #verification, #verifPassenger { margin-top: 16px; padding: 16px; background: #e8f5e9; border-radius: 8px; }
+    #recaptcha-container, #recaptcha-passenger { margin-top: 14px; }
+    .info-box { background: #fff3cd; border: 1px solid #ffc107; border-radius: 8px; padding: 14px; margin-top: 16px; font-size: 0.9rem; }
+    @media (max-width: 600px) {
+      body { font-size: 14px; }
+      header h1 { font-size: 1.5rem; }
+      .tab-btn { padding: 10px 18px; font-size: 0.9rem; }
+      button, input { font-size: 16px; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>🚗 Gandhi</h1>
+  <p>Covoiturage de proximité en Afrique</p>
+</header>
+
+<!-- Onglets -->
+<div class="tabs">
+  <button class="tab-btn active" onclick="switchTab('conducteur')">Je suis conducteur</button>
+  <button class="tab-btn" onclick="switchTab('passager')">Je suis passager</button>
+</div>
+
+<!-- ===================== SECTION CONDUCTEUR ===================== -->
+<div id="conducteur" class="section active">
+  <h2>Inscription conducteur</h2>
+  <form id="conducteurForm">
+    <label>Prénom *</label>
+    <input type="text" id="prenom" required placeholder="Ex : Moussa">
+
+    <label>Nom *</label>
+    <input type="text" id="nom" required placeholder="Ex : Diallo">
+
+    <label>Téléphone (format international, ex: +221771234567) *</label>
+    <input type="tel" id="phone" placeholder="+221771234567" required>
+
+    <label>Photo d'identité (recto CNI ou passeport) *</label>
+    <input type="file" id="cni" accept="image/*" required>
+
+    <label>Photo du permis de conduire *</label>
+    <input type="file" id="permis" accept="image/*" required>
+
+    <label>Photo du véhicule *</label>
+    <input type="file" id="vehicule" accept="image/*" required>
+
+    <div id="recaptcha-container"></div>
+
+    <button type="button" id="sendCodeBtn">Envoyer le code SMS</button>
+
+    <div id="verification" style="display:none;">
+      <label>Code de vérification reçu par SMS</label>
+      <input type="text" id="verificationCode" placeholder="123456" maxlength="6">
+      <button type="button" id="verifyBtn">✅ Vérifier et créer mon compte</button>
+    </div>
+  </form>
+
+  <div class="info-box">
+    📋 Après inscription, vous pourrez publier des annonces depuis votre tableau de bord.
+  </div>
+</div>
+
+<!-- ===================== SECTION PASSAGER ===================== -->
+<div id="passager" class="section">
+  <h2>Inscription passager</h2>
+  <form id="passagerForm">
+    <label>Téléphone (format +221...)</label>
+    <input type="tel" id="passengerPhone" required placeholder="+221771234567">
+    <div id="recaptcha-passenger"></div>
+    <button type="button" id="sendCodePassenger">Envoyer le code SMS</button>
+    <div id="verifPassenger" style="display:none;">
+      <label>Code de vérification reçu par SMS</label>
+      <input type="text" id="codePassenger" placeholder="123456" maxlength="6">
+      <button type="button" id="verifyPassenger">✅ Valider et me connecter</button>
+    </div>
+  </form>
+
+  <div class="info-box">
+    🔍 Après connexion, vous pourrez rechercher des trajets disponibles.
+  </div>
+</div>
+
+<!-- ===================== SDK FIREBASE ===================== -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+  import { getAuth, signInWithPhoneNumber, RecaptchaVerifier } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
+  import { getFirestore, collection, addDoc, query, where, getDocs, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+  import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-storage.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyCEQCpB69WR4qRAbQ9qfIcCsPRm9-l_Lw8",
+    authDomain: "gandhi-aa31c.firebaseapp.com",
+    projectId: "gandhi-aa31c",
+    storageBucket: "gandhi-aa31c.firebasestorage.app",
+    messagingSenderId: "529079046689",
+    appId: "1:529079046689:web:f939f9ebf4ad1f0cad4960"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+  const storage = getStorage(app);
+
+  // Rendre disponible globalement
+  window.db = db;
+  window.auth = auth;
+  window.storage = storage;
+  window.signInWithPhoneNumber = signInWithPhoneNumber;
+  window.RecaptchaVerifier = RecaptchaVerifier;
+  window.collection = collection;
+  window.addDoc = addDoc;
+  window.setDoc = setDoc;
+  window.doc = doc;
+  window.getDoc = getDoc;
+  window.getDocs = getDocs;
+  window.query = query;
+  window.where = where;
+  window.ref = ref;
+  window.uploadBytes = uploadBytes;
+  window.getDownloadURL = getDownloadURL;
+
+  // ===== LOGIQUE CONDUCTEUR =====
+  const prenom = document.getElementById('prenom');
+  const nom = document.getElementById('nom');
+  const phone = document.getElementById('phone');
+  const cniFile = document.getElementById('cni');
+  const permisFile = document.getElementById('permis');
+  const vehiculeFile = document.getElementById('vehicule');
+  const sendCodeBtn = document.getElementById('sendCodeBtn');
+  const verifyBtn = document.getElementById('verifyBtn');
+  const verificationDiv = document.getElementById('verification');
+
+  let confirmationResult = null;
+
+  async function uploadImage(file, path) {
+    const storageRef = ref(storage, path);
+    await uploadBytes(storageRef, file);
+    return await getDownloadURL(storageRef);
+  }
+
+  sendCodeBtn.addEventListener('click', async () => {
+    const phoneNumber = phone.value.trim();
+    if (!phoneNumber) {
+      alert('Veuillez entrer un numéro valide (format +221...)');
+      return;
+    }
+    try {
+      window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
+        'size': 'normal',
+        'callback': () => console.log('reCAPTCHA résolu')
+      });
+      confirmationResult = await signInWithPhoneNumber(auth, phoneNumber, window.recaptchaVerifier);
+      alert('Code SMS envoyé !');
+      verificationDiv.style.display = 'block';
+      sendCodeBtn.disabled = true;
+      sendCodeBtn.textContent = 'Code envoyé ✓';
+    } catch (error) {
+      console.error(error);
+      alert('Erreur : ' + error.message);
+    }
+  });
+
+  verifyBtn.addEventListener('click', async () => {
+    const code = document.getElementById('verificationCode').value;
+    if (!code) { alert('Veuillez entrer le code reçu.'); return; }
+    try {
+      const result = await confirmationResult.confirm(code);
+      const user = result.user;
+      verifyBtn.textContent = 'Téléchargement des photos…';
+      verifyBtn.disabled = true;
+      const cniUrl = await uploadImage(cniFile.files[0], `conducteurs/${user.uid}/cni.jpg`);
+      const permisUrl = await uploadImage(permisFile.files[0], `conducteurs/${user.uid}/permis.jpg`);
+      const vehiculeUrl = await uploadImage(vehiculeFile.files[0], `conducteurs/${user.uid}/vehicule.jpg`);
+      await setDoc(doc(db, 'conducteurs', user.uid), {
+        prenom: prenom.value,
+        nom: nom.value,
+        phone: phone.value,
+        cniUrl,
+        permisUrl,
+        vehiculeUrl,
+        createdAt: new Date().toISOString()
+      });
+      alert('✅ Compte conducteur créé avec succès !');
+      localStorage.setItem('conducteur_uid', user.uid);
+      window.location.href = 'dashboard.html';
+    } catch (error) {
+      console.error(error);
+      alert('Code invalide : ' + error.message);
+      verifyBtn.disabled = false;
+      verifyBtn.textContent = '✅ Vérifier et créer mon compte';
+    }
+  });
+
+  // ===== LOGIQUE PASSAGER =====
+  const passengerPhone = document.getElementById('passengerPhone');
+  const sendCodePassenger = document.getElementById('sendCodePassenger');
+  const verifDiv = document.getElementById('verifPassenger');
+  const codeInput = document.getElementById('codePassenger');
+  const verifyPassenger = document.getElementById('verifyPassenger');
+  let confirmationPassenger = null;
+
+  sendCodePassenger.addEventListener('click', async () => {
+    const phoneNumber = passengerPhone.value.trim();
+    if (!phoneNumber) { alert('Numéro requis'); return; }
+    try {
+      window.recaptchaPassenger = new RecaptchaVerifier(auth, 'recaptcha-passenger', { 'size': 'normal' });
+      confirmationPassenger = await signInWithPhoneNumber(auth, phoneNumber, window.recaptchaPassenger);
+      alert('Code envoyé !');
+      verifDiv.style.display = 'block';
+      sendCodePassenger.disabled = true;
+      sendCodePassenger.textContent = 'Code envoyé ✓';
+    } catch (error) {
+      console.error(error);
+      alert('Erreur : ' + error.message);
+    }
+  });
+
+  verifyPassenger.addEventListener('click', async () => {
+    const code = codeInput.value;
+    if (!code) { alert('Veuillez entrer le code.'); return; }
+    try {
+      const result = await confirmationPassenger.confirm(code);
+      const user = result.user;
+      await setDoc(doc(db, 'passagers', user.uid), {
+        phone: passengerPhone.value,
+        createdAt: new Date().toISOString()
+      });
+      alert('✅ Compte passager créé !');
+      localStorage.setItem('passager_uid', user.uid);
+      window.location.href = 'recherche.html';
+    } catch (error) {
+      console.error(error);
+      alert('Code invalide : ' + error.message);
+    }
+  });
+</script>
+
+<!-- ===================== JS TABS (non-module) ===================== -->
+<script>
+  function switchTab(tab) {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById(tab).classList.add('active');
+    event.target.classList.add('active');
+  }
+</script>
+
+</body>
+</html>

@@ -1,564 +1,239 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Tableau de bord — GANDHI</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gandhi – Tableau de bord conducteur</title>
   <style>
-    :root {
-      --sable: #F5E6C8; --terre: #C4783A; --nuit: #0D1117;
-      --savane: #2A1F14; --vert: #2D6A4F; --vert-light: #52B788;
-      --blanc: #FEFAF3; --gris: #8A7B6E; --radius: 16px;
-      --card: rgba(255,255,255,0.04);
-    }
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      font-family: 'DM Sans', sans-serif;
-      font-size: 16px;
-      background: var(--nuit); color: var(--blanc);
-      min-height: 100vh; padding-bottom: 100px;
+    body { font-family: Arial, sans-serif; font-size: 16px; background: #f5f5f5; color: #333; }
+    header { background: #1a6b3c; color: white; padding: 16px 20px; display: flex; align-items: center; justify-content: space-between; }
+    header h1 { font-size: 1.4rem; }
+    header a { color: white; font-size: 0.85rem; text-decoration: underline; }
+    .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+    h2 { color: #1a6b3c; font-size: 1.3rem; margin-bottom: 16px; }
+    h3 { color: #1a6b3c; font-size: 1.1rem; margin: 24px 0 12px; }
+    label { display: block; font-size: 0.9rem; color: #555; margin-bottom: 4px; margin-top: 12px; }
+    input[type="text"], input[type="date"], input[type="time"], input[type="number"] {
+      width: 100%; padding: 11px 14px; border: 1.5px solid #ccc;
+      border-radius: 8px; font-size: 16px; background: white;
     }
+    input:focus { outline: none; border-color: #1a6b3c; }
+    .row { display: flex; gap: 12px; }
+    .row > div { flex: 1; }
+    button[type="submit"] {
+      margin-top: 20px; width: 100%; padding: 14px;
+      background: #1a6b3c; color: white; border: none;
+      border-radius: 8px; font-size: 1rem; font-weight: bold; cursor: pointer;
+    }
+    button[type="submit"]:hover { background: #145530; }
+    .annonce-card {
+      background: white; border-radius: 10px; padding: 14px 16px;
+      margin-bottom: 12px; border-left: 4px solid #1a6b3c;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+    }
+    .annonce-card h4 { font-size: 1rem; color: #1a6b3c; margin-bottom: 6px; }
+    .annonce-card p { font-size: 0.9rem; color: #666; margin-bottom: 3px; }
+    .annonce-card .badge {
+      display: inline-block; background: #e8f5e9; color: #1a6b3c;
+      font-size: 0.8rem; padding: 2px 8px; border-radius: 12px; font-weight: bold;
+    }
+    .empty { text-align: center; padding: 30px 0; color: #999; font-size: 0.95rem; }
+    .info-box { background: #fff3cd; border: 1px solid #ffc107; border-radius: 8px; padding: 12px 14px; font-size: 0.88rem; margin-top: 12px; }
     @media (max-width: 600px) {
       body { font-size: 14px; }
-      h1 { font-size: 1.3rem !important; }
-      h2 { font-size: 1.2rem !important; }
-      button { font-size: 1rem; }
-      input, select, textarea { font-size: 16px !important; }
+      h2 { font-size: 1.15rem; }
+      .row { flex-direction: column; gap: 0; }
+      button, input { font-size: 16px; }
     }
-    /* Top bar */
-    .topbar {
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 16px 20px;
-      background: rgba(13,17,23,0.98);
-      border-bottom: 1px solid rgba(196,120,58,0.15);
-      position: sticky; top: 0; z-index: 50;
-    }
-    .logo { font-family: 'Syne', sans-serif; font-size: 1.4rem; font-weight: 800; color: var(--terre); }
-    .logo span { color: var(--vert-light); }
-    .user-pill {
-      display: flex; align-items: center; gap: 8px;
-      background: rgba(255,255,255,0.06); border-radius: 40px; padding: 6px 12px;
-    }
-    .user-avatar {
-      width: 28px; height: 28px; border-radius: 50%; background: var(--terre);
-      display: flex; align-items: center; justify-content: center;
-      font-family: 'Syne', sans-serif; font-weight: 800; font-size: 0.7rem;
-    }
-    .user-name { font-size: 0.82rem; font-weight: 500; }
-
-    /* Welcome */
-    .welcome {
-      padding: 28px 20px 0;
-      background: linear-gradient(135deg, rgba(196,120,58,0.08) 0%, transparent 60%);
-    }
-    .welcome-text { font-size: 0.85rem; color: var(--gris); }
-    .welcome-name {
-      font-family: 'Syne', sans-serif; font-size: 1.6rem; font-weight: 800;
-      letter-spacing: -1px; color: var(--blanc);
-    }
-    .welcome-name span { color: var(--terre); }
-
-    /* Stats row */
-    .stats-row {
-      display: flex; gap: 12px; padding: 20px 20px 0; overflow-x: auto;
-    }
-    .stat-card {
-      min-width: 110px; flex: 1; background: var(--card);
-      border: 1px solid rgba(255,255,255,0.08); border-radius: var(--radius);
-      padding: 16px 14px; text-align: center;
-    }
-    .stat-num {
-      font-family: 'Syne', sans-serif; font-size: 1.5rem; font-weight: 800;
-      color: var(--terre);
-    }
-    .stat-label { font-size: 0.72rem; color: var(--gris); margin-top: 2px; }
-
-    /* Section */
-    .section { padding: 28px 20px 0; }
-    .section-header {
-      display: flex; align-items: center; justify-content: space-between;
-      margin-bottom: 16px;
-    }
-    .section-title {
-      font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 800;
-    }
-    .btn-add {
-      background: var(--terre); color: #fff;
-      padding: 9px 18px; border-radius: 10px; border: none; cursor: pointer;
-      font-family: 'Syne', sans-serif; font-size: 0.82rem; font-weight: 700;
-      display: flex; align-items: center; gap: 6px;
-      transition: opacity .2s;
-    }
-    .btn-add:hover { opacity: 0.88; }
-
-    /* Annonce cards */
-    .annonce-item {
-      background: var(--card); border: 1px solid rgba(255,255,255,0.08);
-      border-radius: var(--radius); padding: 18px 16px; margin-bottom: 12px;
-      animation: fadeIn .4s ease both;
-    }
-    @keyframes fadeIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:none; } }
-
-    .ann-top {
-      display: flex; justify-content: space-between; align-items: flex-start;
-      margin-bottom: 12px;
-    }
-    .ann-trajet {
-      font-family: 'Syne', sans-serif; font-size: 1rem; font-weight: 800;
-    }
-    .arr-arrow { color: var(--terre); }
-    .ann-meta { font-size: 0.78rem; color: var(--gris); margin-top: 3px; }
-    .status-badge {
-      padding: 4px 10px; border-radius: 6px; font-size: 0.72rem;
-      font-family: 'Syne', sans-serif; font-weight: 700;
-    }
-    .status-active { background: rgba(82,183,136,0.15); color: var(--vert-light); border: 1px solid rgba(82,183,136,0.3); }
-    .status-expired { background: rgba(255,255,255,0.06); color: var(--gris); border: 1px solid rgba(255,255,255,0.1); }
-    .ann-chips { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
-    .chip {
-      background: rgba(255,255,255,0.05); border-radius: 8px;
-      padding: 4px 9px; font-size: 0.75rem; color: var(--sable);
-      display: flex; align-items: center; gap: 4px;
-    }
-    .chip-prix { background: rgba(196,120,58,0.12); color: var(--terre); }
-    .ann-actions { display: flex; gap: 8px; }
-    .btn-edit {
-      flex: 1; padding: 9px; background: rgba(255,255,255,0.06);
-      border: 1px solid rgba(255,255,255,0.1); border-radius: 10px;
-      color: var(--sable); font-size: 0.8rem; cursor: pointer; font-family: 'DM Sans', sans-serif;
-    }
-    .btn-delete {
-      padding: 9px 14px; background: rgba(220,53,69,0.1);
-      border: 1px solid rgba(220,53,69,0.25); border-radius: 10px;
-      color: #e87878; font-size: 0.8rem; cursor: pointer; font-family: 'DM Sans', sans-serif;
-    }
-
-    /* Empty */
-    .empty-annonces {
-      text-align: center; padding: 40px 20px;
-      background: var(--card); border: 1px dashed rgba(196,120,58,0.2);
-      border-radius: var(--radius);
-    }
-    .empty-annonces .e-icon { font-size: 2.5rem; margin-bottom: 10px; }
-    .empty-annonces p { font-size: 0.85rem; color: var(--gris); }
-
-    /* Bottom nav */
-    .bottom-nav {
-      position: fixed; bottom: 0; left: 0; right: 0;
-      background: rgba(13,17,23,0.96); backdrop-filter: blur(12px);
-      border-top: 1px solid rgba(255,255,255,0.07);
-      display: flex; padding: 10px 0 20px;
-    }
-    .nav-item {
-      flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px;
-      padding: 4px; cursor: pointer; text-decoration: none; color: var(--gris);
-      transition: color .2s;
-    }
-    .nav-item.active { color: var(--terre); }
-    .nav-icon { font-size: 1.3rem; }
-    .nav-label { font-size: 0.65rem; font-family: 'Syne', sans-serif; font-weight: 700; }
-
-    /* Modal publication */
-    .pub-overlay {
-      position: fixed; inset: 0; z-index: 200;
-      background: rgba(0,0,0,0.75); backdrop-filter: blur(6px);
-      display: none; align-items: flex-end; justify-content: center;
-    }
-    .pub-overlay.open { display: flex; }
-    .pub-sheet {
-      background: var(--savane); border-radius: 24px 24px 0 0;
-      width: 100%; max-width: 480px; max-height: 92vh;
-      overflow-y: auto; padding: 32px 24px 40px;
-      border-top: 3px solid var(--terre);
-      animation: slideUp .3s ease; position: relative;
-    }
-    @keyframes slideUp { from { transform:translateY(100%); } to { transform:none; } }
-    .pub-close {
-      position: absolute; top: 16px; right: 20px;
-      background: none; border: none; color: var(--gris); font-size: 1.4rem; cursor: pointer;
-    }
-    .pub-sheet h2 {
-      font-family: 'Syne', sans-serif; font-size: 1.4rem; font-weight: 800;
-      margin-bottom: 4px; letter-spacing: -0.5px;
-    }
-    .pub-sub { font-size: 0.82rem; color: var(--gris); margin-bottom: 24px; }
-    .form-group { margin-bottom: 16px; }
-    .form-group label {
-      display: block; font-size: 0.76rem; font-weight: 500;
-      color: var(--sable); margin-bottom: 6px; text-transform: uppercase; letter-spacing: .5px;
-    }
-    .form-group input, .form-group select, .form-group textarea {
-      width: 100%; padding: 12px 14px;
-      background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12);
-      border-radius: 12px; color: var(--blanc); font-family: 'DM Sans', sans-serif; font-size: 0.9rem;
-      outline: none; transition: border-color .2s; appearance: none;
-    }
-    .form-group input:focus, .form-group select:focus { border-color: var(--terre); }
-    .form-group select option { background: var(--savane); }
-    .form-row { display: flex; gap: 10px; }
-    .form-row .form-group { flex: 1; }
-    .toggle-row {
-      display: flex; align-items: center; justify-content: space-between;
-      background: rgba(255,255,255,0.05); border-radius: 12px; padding: 14px 16px;
-      margin-bottom: 16px;
-    }
-    .toggle-label { font-size: 0.88rem; }
-    .toggle-sub { font-size: 0.72rem; color: var(--gris); }
-    .toggle {
-      width: 48px; height: 26px; background: rgba(255,255,255,0.1);
-      border-radius: 13px; position: relative; cursor: pointer;
-      transition: background .3s; flex-shrink: 0;
-    }
-    .toggle.on { background: var(--vert-light); }
-    .toggle::after {
-      content: ''; position: absolute; top: 3px; left: 3px;
-      width: 20px; height: 20px; border-radius: 50%; background: #fff;
-      transition: left .3s;
-    }
-    .toggle.on::after { left: 25px; }
-    .payment-section {
-      background: rgba(196,120,58,0.08); border: 1px solid rgba(196,120,58,0.25);
-      border-radius: 14px; padding: 18px; margin-bottom: 16px;
-    }
-    .payment-title {
-      font-family: 'Syne', sans-serif; font-weight: 700; margin-bottom: 8px; font-size: 0.9rem;
-    }
-    .payment-methods { display: flex; gap: 8px; margin-bottom: 12px; }
-    .pay-btn {
-      flex: 1; padding: 10px; border-radius: 10px; border: 2px solid; cursor: pointer;
-      font-family: 'Syne', sans-serif; font-size: 0.82rem; font-weight: 700;
-      text-align: center; transition: all .2s; background: transparent;
-    }
-    .pay-wave { border-color: rgba(0,122,255,0.4); color: #4DA6FF; }
-    .pay-wave.selected { background: rgba(0,122,255,0.15); }
-    .pay-orange { border-color: rgba(255,140,0,0.4); color: #FFB347; }
-    .pay-orange.selected { background: rgba(255,140,0,0.15); }
-    .btn-publish {
-      width: 100%; padding: 16px; background: var(--terre); color: #fff;
-      border: none; border-radius: 12px; cursor: pointer;
-      font-family: 'Syne', sans-serif; font-size: 1rem; font-weight: 700;
-      box-shadow: 0 4px 20px rgba(196,120,58,0.3); transition: opacity .2s;
-    }
-    .btn-publish:hover { opacity: 0.88; }
-
-    /* Notify */
-    .notify-bar {
-      position: fixed; top: 72px; left: 12px; right: 12px; z-index: 300;
-      padding: 14px 18px; border-radius: 12px; font-family: 'Syne', sans-serif;
-      font-weight: 700; font-size: 0.88rem; display: none; align-items: center; gap: 8px;
-      box-shadow: 0 6px 20px rgba(0,0,0,0.3);
-    }
-    .notify-bar.show { display: flex; animation: fadeIn .3s ease; }
-    .notify-success { background: var(--vert); color: #fff; }
-    .notify-error { background: #c0392b; color: #fff; }
   </style>
 </head>
 <body>
 
-<!-- Notify -->
-<div class="notify-bar" id="notifyBar"></div>
+<header>
+  <h1>🚗 Gandhi – Mon tableau de bord</h1>
+  <a href="index.html">← Déconnexion</a>
+</header>
 
-<!-- Top bar -->
-<div class="topbar">
-  <div class="logo">GAN<span>DHI</span></div>
-  <div class="user-pill">
-    <div class="user-avatar">MD</div>
-    <span class="user-name">Moussa D.</span>
-  </div>
-</div>
+<div class="container">
 
-<!-- Welcome -->
-<div class="welcome">
-  <div class="welcome-text">Bonjour 👋</div>
-  <div class="welcome-name">Moussa <span>Diallo</span></div>
-</div>
+  <!-- ===================== FORMULAIRE ANNONCE ===================== -->
+  <h2>Publier une annonce de trajet</h2>
 
-<!-- Stats -->
-<div class="stats-row">
-  <div class="stat-card">
-    <div class="stat-num" id="countActives">2</div>
-    <div class="stat-label">Annonces actives</div>
-  </div>
-  <div class="stat-card">
-    <div class="stat-num">5</div>
-    <div class="stat-label">Total publiées</div>
-  </div>
-  <div class="stat-card">
-    <div class="stat-num">500 F</div>
-    <div class="stat-label">Dépensé</div>
-  </div>
-</div>
-
-<!-- Mes annonces -->
-<div class="section">
-  <div class="section-header">
-    <div class="section-title">Mes annonces</div>
-    <button class="btn-add" onclick="openPublication()">+ Publier</button>
-  </div>
-  <div id="annoncesList"></div>
-</div>
-
-<!-- Profile rapide -->
-<div class="section" style="margin-top: 8px;">
-  <div class="section-title" style="margin-bottom:14px">Mon profil</div>
-  <div style="background:var(--card);border:1px solid rgba(255,255,255,0.08);border-radius:var(--radius);padding:18px 16px">
-    <div style="display:flex;gap:14px;align-items:center;margin-bottom:16px">
-      <div class="user-avatar" style="width:48px;height:48px;font-size:1rem">MD</div>
+  <form id="annonceForm">
+    <div class="row">
       <div>
-        <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:1rem">Moussa Diallo</div>
-        <div style="font-size:0.8rem;color:var(--gris)">+221 77 123 45 67</div>
-      </div>
-      <div style="margin-left:auto;background:rgba(82,183,136,0.1);border:1px solid rgba(82,183,136,0.3);border-radius:8px;padding:4px 10px;font-size:0.72rem;color:var(--vert-light);font-family:'Syne',sans-serif;font-weight:700">✓ Vérifié</div>
-    </div>
-    <div style="display:flex;gap:10px">
-      <div style="flex:1;background:rgba(255,255,255,0.04);border-radius:10px;padding:12px;text-align:center">
-        <div style="font-size:1rem;margin-bottom:4px">🪪</div>
-        <div style="font-size:0.72rem;color:var(--vert-light)">CNI ✓</div>
-      </div>
-      <div style="flex:1;background:rgba(255,255,255,0.04);border-radius:10px;padding:12px;text-align:center">
-        <div style="font-size:1rem;margin-bottom:4px">📋</div>
-        <div style="font-size:0.72rem;color:var(--vert-light)">Permis ✓</div>
-      </div>
-      <div style="flex:1;background:rgba(255,255,255,0.04);border-radius:10px;padding:12px;text-align:center">
-        <div style="font-size:1rem;margin-bottom:4px">🚗</div>
-        <div style="font-size:0.72rem;color:var(--vert-light)">Véhicule ✓</div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- Bottom nav -->
-<nav class="bottom-nav">
-  <a class="nav-item active" href="dashboard.html">
-    <span class="nav-icon">🏠</span><span class="nav-label">Accueil</span>
-  </a>
-  <a class="nav-item" href="#" onclick="openPublication()">
-    <span class="nav-icon">➕</span><span class="nav-label">Publier</span>
-  </a>
-  <a class="nav-item" href="recherche.html">
-    <span class="nav-icon">🔍</span><span class="nav-label">Recherche</span>
-  </a>
-  <a class="nav-item" href="index.html">
-    <span class="nav-icon">👤</span><span class="nav-label">Profil</span>
-  </a>
-</nav>
-
-<!-- Modal publication -->
-<div class="pub-overlay" id="pubOverlay" onclick="closePubOutside(event)">
-  <div class="pub-sheet">
-    <button class="pub-close" onclick="closePub()">✕</button>
-    <h2>Publier une annonce</h2>
-    <p class="pub-sub">Remplissez les informations de votre trajet.</p>
-
-    <div class="form-row">
-      <div class="form-group">
         <label>Ville départ *</label>
-        <select id="pub-dep">
-          <option value="">Choisir</option>
-          <option>Dakar</option><option>Thiès</option><option>Saint-Louis</option>
-          <option>Ziguinchor</option><option>Touba</option><option>Kaolack</option>
-          <option>Mbour</option><option>Diourbel</option><option>Louga</option>
-          <option>Tambacounda</option>
-        </select>
+        <input type="text" id="villeDep" placeholder="Ex : Dakar" required>
       </div>
-      <div class="form-group">
+      <div>
         <label>Quartier départ *</label>
-        <input type="text" id="pub-qDep" placeholder="ex: Plateau" />
+        <input type="text" id="quartierDep" placeholder="Ex : Plateau" required>
       </div>
     </div>
-    <div class="form-row">
-      <div class="form-group">
+
+    <div class="row">
+      <div>
         <label>Ville arrivée *</label>
-        <select id="pub-arr">
-          <option value="">Choisir</option>
-          <option>Dakar</option><option>Thiès</option><option>Saint-Louis</option>
-          <option>Ziguinchor</option><option>Touba</option><option>Kaolack</option>
-          <option>Mbour</option><option>Diourbel</option><option>Louga</option>
-          <option>Tambacounda</option>
-        </select>
+        <input type="text" id="villeArr" placeholder="Ex : Thiès" required>
       </div>
-      <div class="form-group">
+      <div>
         <label>Quartier arrivée</label>
-        <input type="text" id="pub-qArr" placeholder="Optionnel" />
+        <input type="text" id="quartierArr" placeholder="Optionnel">
       </div>
     </div>
-    <div class="form-row">
-      <div class="form-group">
+
+    <div class="row">
+      <div>
         <label>Date *</label>
-        <input type="date" id="pub-date" />
+        <input type="date" id="date" required>
       </div>
-      <div class="form-group">
-        <label>Heure départ *</label>
-        <input type="time" id="pub-heure" />
-      </div>
-    </div>
-    <div class="form-row">
-      <div class="form-group">
-        <label>Nb de places *</label>
-        <select id="pub-places">
-          <option>1</option><option>2</option><option selected>3</option>
-          <option>4</option><option>5</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label>Prix / passager (FCFA) *</label>
-        <input type="number" id="pub-prix" placeholder="3500" />
-      </div>
-    </div>
-    <div class="form-group">
-      <label>Marque du véhicule *</label>
-      <select id="pub-marque">
-        <option value="">Sélectionner</option>
-        <option>Toyota</option><option>Peugeot</option><option>Renault</option>
-        <option>Hyundai</option><option>Kia</option><option>Mercedes</option>
-        <option>Volkswagen</option><option>Nissan</option><option>Honda</option>
-        <option>Mitsubishi</option><option>Daewoo</option><option>Autre</option>
-      </select>
-    </div>
-    <div class="toggle-row">
       <div>
-        <div class="toggle-label">🏠 Prise en charge à domicile</div>
-        <div class="toggle-sub">Vous allez chercher le passager chez lui</div>
-      </div>
-      <div class="toggle on" id="domicileToggle" onclick="toggleDomicile()"></div>
-    </div>
-    <div class="form-group" id="rayonGroup">
-      <label>Rayon de détour max (km)</label>
-      <input type="number" id="pub-rayon" value="2" min="1" max="10" />
-    </div>
-    <div class="form-group">
-      <label>Téléphone conducteur</label>
-      <input type="tel" id="pub-phone" value="+221 77 123 45 67" />
-    </div>
-
-    <!-- Lancement gratuit -->
-    <div style="background:rgba(82,183,136,0.08);border:1px solid rgba(82,183,136,0.25);border-radius:14px;padding:14px 16px;margin-bottom:16px;display:flex;align-items:center;gap:10px">
-      <span style="font-size:1.3rem">🎁</span>
-      <div>
-        <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:0.88rem;color:var(--vert-light)">Gratuit pendant la période de lancement</div>
-        <div style="font-size:0.75rem;color:var(--gris);margin-top:2px">Publiez vos annonces sans frais. Le paiement sera activé prochainement.</div>
+        <label>Heure *</label>
+        <input type="time" id="heure" required>
       </div>
     </div>
 
-    <button class="btn-publish" onclick="publishAnnonce()">Publier gratuitement →</button>
-  </div>
+    <div class="row">
+      <div>
+        <label>Nombre de places *</label>
+        <input type="number" id="places" placeholder="Ex : 3" min="1" max="8" required>
+      </div>
+      <div>
+        <label>Prix par passager (FCFA) *</label>
+        <input type="number" id="prix" placeholder="Ex : 2500" min="0" required>
+      </div>
+    </div>
+
+    <label>Marque du véhicule *</label>
+    <input type="text" id="marque" placeholder="Ex : Toyota Corolla" required>
+
+    <div class="info-box">
+      💳 Publication : 100 FCFA par annonce (paiement Wave / Orange Money – à venir)
+    </div>
+
+    <button type="submit">Publier mon trajet →</button>
+  </form>
+
+  <!-- ===================== MES ANNONCES ===================== -->
+  <div id="mesAnnonces"></div>
+
 </div>
 
-<script>
-  let annonces = [
-    { id:1, dep:'Dakar', qDep:'Plateau', arr:'Thiès', qArr:'Centre', date:'2025-07-15', heure:'06:30', places:3, prix:3500, domicile:true, marque:'Toyota', status:'active' },
-    { id:2, dep:'Dakar', qDep:'HLM', arr:'Mbour', qArr:'', date:'2025-07-13', heure:'08:00', places:2, prix:4500, domicile:false, marque:'Toyota', status:'expired' },
-  ];
-  let domicileOn = true;
-  let payMethod = 'wave';
+<!-- ===================== SDK FIREBASE ===================== -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+  import { getAuth, signInWithPhoneNumber, RecaptchaVerifier } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
+  import { getFirestore, collection, addDoc, query, where, getDocs, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+  import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-storage.js";
 
-  function renderAnnonces() {
-    const list = document.getElementById('annoncesList');
-    const actives = annonces.filter(a => a.status === 'active').length;
-    document.getElementById('countActives').textContent = actives;
+  const firebaseConfig = {
+    apiKey: "AIzaSyCEQCpB69WR4qRAbQ9qfIcCsPRm9-l_Lw8",
+    authDomain: "gandhi-aa31c.firebaseapp.com",
+    projectId: "gandhi-aa31c",
+    storageBucket: "gandhi-aa31c.firebasestorage.app",
+    messagingSenderId: "529079046689",
+    appId: "1:529079046689:web:f939f9ebf4ad1f0cad4960"
+  };
 
-    if (annonces.length === 0) {
-      list.innerHTML = `<div class="empty-annonces"><div class="e-icon">🚗</div><p>Aucune annonce. Publiez votre premier trajet !</p></div>`;
-      return;
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+  const storage = getStorage(app);
+
+  // Rendre disponible globalement
+  window.db = db; window.auth = auth; window.storage = storage;
+  window.signInWithPhoneNumber = signInWithPhoneNumber;
+  window.RecaptchaVerifier = RecaptchaVerifier;
+  window.collection = collection; window.addDoc = addDoc;
+  window.setDoc = setDoc; window.doc = doc;
+  window.getDoc = getDoc; window.getDocs = getDocs;
+  window.query = query; window.where = where;
+  window.ref = ref; window.uploadBytes = uploadBytes;
+  window.getDownloadURL = getDownloadURL;
+
+  // ===== VÉRIFICATION CONDUCTEUR CONNECTÉ =====
+  const conducteurId = localStorage.getItem('conducteur_uid');
+  if (!conducteurId) {
+    alert('Veuillez vous connecter en tant que conducteur.');
+    window.location.href = 'index.html';
+  }
+
+  // ===== FORMULAIRE PUBLICATION ANNONCE =====
+  const annonceForm = document.getElementById('annonceForm');
+
+  annonceForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const submitBtn = annonceForm.querySelector('button[type="submit"]');
+    submitBtn.textContent = 'Publication en cours…';
+    submitBtn.disabled = true;
+
+    const annonce = {
+      conducteur_id: conducteurId,
+      ville_depart: document.getElementById('villeDep').value.trim(),
+      quartier_depart: document.getElementById('quartierDep').value.trim(),
+      ville_arrivee: document.getElementById('villeArr').value.trim(),
+      quartier_arrivee: document.getElementById('quartierArr').value.trim() || '',
+      date_depart: document.getElementById('date').value,
+      heure_depart: document.getElementById('heure').value,
+      places_total: parseInt(document.getElementById('places').value),
+      prix_par_passager: parseInt(document.getElementById('prix').value),
+      marque_vehicule: document.getElementById('marque').value.trim(),
+      prise_en_charge_domicile: true,
+      rayon_detour_km: 2,
+      status: 'active',
+      created_at: new Date().toISOString()
+    };
+
+    try {
+      await addDoc(collection(db, 'annonces'), annonce);
+      alert('✅ Annonce publiée avec succès !');
+      annonceForm.reset();
+      afficherMesAnnonces();
+    } catch (error) {
+      console.error(error);
+      alert('Erreur lors de la publication : ' + error.message);
     }
-    list.innerHTML = annonces.map((a, i) => `
-      <div class="annonce-item" style="animation-delay:${i*0.08}s">
-        <div class="ann-top">
-          <div>
-            <div class="ann-trajet">${a.dep} <span class="arr-arrow">→</span> ${a.arr}</div>
-            <div class="ann-meta">${a.qDep} ${a.qArr ? '→ '+a.qArr : ''} · ${formatDate(a.date)} à ${a.heure}</div>
+
+    submitBtn.textContent = 'Publier mon trajet →';
+    submitBtn.disabled = false;
+  });
+
+  // ===== AFFICHAGE DES ANNONCES DU CONDUCTEUR =====
+  async function afficherMesAnnonces() {
+    const container = document.getElementById('mesAnnonces');
+    container.innerHTML = '<h3>Mes annonces publiées</h3>';
+
+    try {
+      const q = query(collection(db, 'annonces'), where('conducteur_id', '==', conducteurId));
+      const snapshot = await getDocs(q);
+
+      if (snapshot.empty) {
+        container.innerHTML += '<div class="empty">Aucune annonce publiée pour le moment.</div>';
+        return;
+      }
+
+      snapshot.forEach(docSnap => {
+        const a = docSnap.data();
+        const statusBadge = a.status === 'active' ? '🟢 Active' : '🔴 Inactive';
+        container.innerHTML += `
+          <div class="annonce-card">
+            <h4>📍 ${a.ville_depart} → ${a.ville_arrivee}</h4>
+            <p>📅 ${a.date_depart} à ${a.heure_depart}</p>
+            <p>💺 ${a.places_total} place(s) · 💰 ${a.prix_par_passager} FCFA / passager</p>
+            <p>🚗 ${a.marque_vehicule}</p>
+            <span class="badge">${statusBadge}</span>
           </div>
-          <span class="status-badge ${a.status === 'active' ? 'status-active' : 'status-expired'}">
-            ${a.status === 'active' ? '● Actif' : '○ Expiré'}
-          </span>
-        </div>
-        <div class="ann-chips">
-          <div class="chip">💺 ${a.places} place${a.places>1?'s':''}</div>
-          <div class="chip chip-prix">💰 ${a.prix.toLocaleString('fr')} F</div>
-          <div class="chip">🚗 ${a.marque}</div>
-          ${a.domicile ? '<div class="chip" style="color:var(--vert-light)">🏠 Domicile</div>' : ''}
-        </div>
-        <div class="ann-actions">
-          <button class="btn-edit">✏️ Modifier</button>
-          <button class="btn-delete" onclick="deleteAnnonce(${a.id})">🗑</button>
-        </div>
-      </div>
-    `).join('');
-  }
-
-  function formatDate(d) {
-    if (!d) return '';
-    const [y,m,j] = d.split('-');
-    const mois = ['Jan','Fév','Mar','Avr','Mai','Jun','Jul','Aoû','Sep','Oct','Nov','Déc'];
-    return `${j} ${mois[parseInt(m)-1]}`;
-  }
-
-  function deleteAnnonce(id) {
-    annonces = annonces.filter(a => a.id !== id);
-    renderAnnonces();
-    notify('Annonce supprimée.', 'success');
-  }
-
-  function openPublication() { document.getElementById('pubOverlay').classList.add('open'); }
-  function closePub() { document.getElementById('pubOverlay').classList.remove('open'); }
-  function closePubOutside(e) { if (e.target.id === 'pubOverlay') closePub(); }
-
-  function toggleDomicile() {
-    domicileOn = !domicileOn;
-    document.getElementById('domicileToggle').classList.toggle('on', domicileOn);
-    document.getElementById('rayonGroup').style.display = domicileOn ? '' : 'none';
-  }
-
-  function selectPay(m) {
-    payMethod = m;
-    document.getElementById('payWave').classList.toggle('selected', m === 'wave');
-    document.getElementById('payOrange').classList.toggle('selected', m === 'orange');
-  }
-
-  function publishAnnonce() {
-    const dep = document.getElementById('pub-dep').value;
-    const arr = document.getElementById('pub-arr').value;
-    const date = document.getElementById('pub-date').value;
-    const heure = document.getElementById('pub-heure').value;
-    const prix = document.getElementById('pub-prix').value;
-    const marque = document.getElementById('pub-marque').value;
-
-    if (!dep || !arr || !date || !heure || !prix || !marque) {
-      notify('Remplissez tous les champs obligatoires (*)', 'error'); return;
+        `;
+      });
+    } catch (error) {
+      container.innerHTML += '<div class="empty">Erreur de chargement.</div>';
+      console.error(error);
     }
-    if (dep === arr) {
-      notify('Les villes de départ et d\'arrivée doivent être différentes', 'error'); return;
-    }
-
-    const newAnn = {
-        id: Date.now(),
-        dep, qDep: document.getElementById('pub-qDep').value,
-        arr, qArr: document.getElementById('pub-qArr').value,
-        date, heure,
-        places: parseInt(document.getElementById('pub-places').value),
-        prix: parseInt(prix),
-        domicile: domicileOn,
-        marque,
-        status: 'active'
-      };
-      annonces.unshift(newAnn);
-      renderAnnonces();
-      closePub();
-      notify('🎉 Annonce publiée avec succès !', 'success');
   }
 
-  function notify(msg, type) {
-    const bar = document.getElementById('notifyBar');
-    bar.textContent = msg;
-    bar.className = 'notify-bar show notify-' + type;
-    setTimeout(() => bar.classList.remove('show'), 3000);
-  }
-
-  // Init
-  document.getElementById('pub-date').value = new Date().toISOString().split('T')[0];
-  renderAnnonces();
+  afficherMesAnnonces();
 </script>
+
 </body>
 </html>
