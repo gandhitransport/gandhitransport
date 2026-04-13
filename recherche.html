@@ -1,101 +1,286 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Gandhi – Rechercher un trajet</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Rechercher un trajet — GANDHI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
   <style>
+    :root {
+      --sable: #F5E6C8; --terre: #C4783A; --nuit: #0D1117;
+      --savane: #2A1F14; --vert: #2D6A4F; --vert-light: #52B788;
+      --blanc: #FEFAF3; --gris: #8A7B6E; --radius: 16px;
+    }
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: Arial, sans-serif; font-size: 16px; background: #f5f5f5; color: #333; }
-    header { background: #1a6b3c; color: white; padding: 16px 20px; display: flex; align-items: center; justify-content: space-between; }
-    header h1 { font-size: 1.4rem; }
-    header a { color: white; font-size: 0.85rem; text-decoration: underline; }
-    .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-    h2 { color: #1a6b3c; font-size: 1.3rem; margin-bottom: 16px; }
-    .search-box {
-      background: white; border-radius: 12px; padding: 20px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.08); margin-bottom: 24px;
+    body {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 16px;
+      background: var(--nuit); color: var(--blanc);
+      min-height: 100vh;
     }
-    label { display: block; font-size: 0.9rem; color: #555; margin-bottom: 4px; margin-top: 12px; }
-    input[type="text"] {
-      width: 100%; padding: 11px 14px; border: 1.5px solid #ccc;
-      border-radius: 8px; font-size: 16px; background: #fafafa;
-    }
-    input:focus { outline: none; border-color: #1a6b3c; background: white; }
-    .search-row { display: flex; gap: 12px; align-items: flex-end; margin-top: 4px; }
-    .search-row > div { flex: 1; }
-    #searchBtn {
-      padding: 12px 22px; background: #1a6b3c; color: white;
-      border: none; border-radius: 8px; font-size: 1rem; font-weight: bold;
-      cursor: pointer; white-space: nowrap; margin-bottom: 0;
-    }
-    #searchBtn:hover { background: #145530; }
-    #resetBtn {
-      padding: 12px 16px; background: #eee; color: #555;
-      border: none; border-radius: 8px; font-size: 0.9rem; cursor: pointer;
-    }
-    #resetBtn:hover { background: #ddd; }
-    .annonce-card {
-      background: white; border-radius: 10px; padding: 16px;
-      margin-bottom: 14px; border-left: 4px solid #1a6b3c;
-      box-shadow: 0 1px 5px rgba(0,0,0,0.08);
-    }
-    .annonce-card h3 { font-size: 1.05rem; color: #1a6b3c; margin-bottom: 8px; }
-    .annonce-card p { font-size: 0.9rem; color: #555; margin-bottom: 4px; }
-    .annonce-card .conducteur { font-size: 0.88rem; color: #777; padding-top: 6px; border-top: 1px solid #eee; margin-top: 8px; }
-    .contact-btn {
-      display: inline-block; margin-top: 10px; padding: 10px 20px;
-      background: #25D366; color: white; border: none; border-radius: 20px;
-      font-size: 0.9rem; font-weight: bold; cursor: pointer; text-decoration: none;
-    }
-    .contact-btn:hover { background: #1ebe5d; }
-    .loading { text-align: center; padding: 30px; color: #999; }
-    .empty { text-align: center; padding: 40px 20px; color: #aaa; }
-    .empty span { font-size: 2.5rem; display: block; margin-bottom: 10px; }
-    .result-count { font-size: 0.9rem; color: #777; margin-bottom: 14px; }
     @media (max-width: 600px) {
       body { font-size: 14px; }
-      h2 { font-size: 1.15rem; }
-      .search-row { flex-direction: column; }
-      #searchBtn, #resetBtn { width: 100%; }
-      button, input { font-size: 16px; }
+      h1 { font-size: 1.3rem !important; }
+      h2 { font-size: 1.2rem !important; }
+      button { font-size: 1rem; }
+      input, select, textarea { font-size: 16px !important; }
+    }
+    nav {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 16px 20px;
+      background: rgba(13,17,23,0.95);
+      border-bottom: 1px solid rgba(196,120,58,0.15);
+      position: sticky; top: 0; z-index: 50;
+    }
+    .logo { font-family: 'Syne', sans-serif; font-size: 1.4rem; font-weight: 800; color: var(--terre); text-decoration: none; }
+    .logo span { color: var(--vert-light); }
+    nav a.back { color: var(--gris); font-size: 0.85rem; text-decoration: none; }
+
+    /* Search panel */
+    .search-panel {
+      background: linear-gradient(180deg, rgba(196,120,58,0.08) 0%, transparent 100%);
+      padding: 24px 20px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .search-panel h1 {
+      font-family: 'Syne', sans-serif; font-size: 1.4rem; font-weight: 800;
+      margin-bottom: 16px; letter-spacing: -0.5px;
+    }
+    .search-grid { display: flex; flex-direction: column; gap: 10px; }
+    .search-row { display: flex; gap: 10px; }
+    .search-field {
+      flex: 1;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 12px; padding: 12px 14px;
+      color: var(--blanc); font-family: 'DM Sans', sans-serif; font-size: 0.9rem;
+      outline: none; transition: border-color .2s;
+      appearance: none; width: 100%;
+    }
+    .search-field:focus { border-color: var(--terre); }
+    .search-field option { background: var(--savane); }
+    .btn-search {
+      width: 100%; padding: 14px; border-radius: 12px;
+      background: var(--terre); color: #fff; border: none; cursor: pointer;
+      font-family: 'Syne', sans-serif; font-size: 1rem; font-weight: 700;
+      transition: opacity .2s; margin-top: 4px;
+    }
+    .btn-search:hover { opacity: 0.88; }
+
+    /* Results */
+    .results-header {
+      padding: 16px 20px 8px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .results-count { font-size: 0.85rem; color: var(--gris); }
+    .results-count strong { color: var(--blanc); }
+    .sort-btn {
+      font-size: 0.8rem; color: var(--terre); background: none; border: none;
+      cursor: pointer; font-family: 'DM Sans', sans-serif;
+    }
+
+    .annonces-list { padding: 0 16px 100px; display: flex; flex-direction: column; gap: 14px; }
+
+    .annonce-card {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: var(--radius); padding: 18px 16px;
+      transition: border-color .2s, transform .15s;
+      cursor: pointer;
+      animation: fadeIn .4s ease both;
+    }
+    .annonce-card:hover { border-color: var(--terre); transform: translateY(-2px); }
+    @keyframes fadeIn { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:none; } }
+
+    .card-top {
+      display: flex; justify-content: space-between; align-items: flex-start;
+      margin-bottom: 14px;
+    }
+    .trajet-info {}
+    .trajet-villes {
+      font-family: 'Syne', sans-serif; font-size: 1.05rem; font-weight: 800;
+      letter-spacing: -0.5px;
+    }
+    .trajet-arrow { color: var(--terre); margin: 0 6px; }
+    .trajet-meta { font-size: 0.78rem; color: var(--gris); margin-top: 4px; }
+    .prix-badge {
+      background: rgba(196,120,58,0.15); border: 1px solid rgba(196,120,58,0.35);
+      color: var(--terre); padding: 6px 12px; border-radius: 8px;
+      font-family: 'Syne', sans-serif; font-size: 0.9rem; font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .card-details {
+      display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px;
+    }
+    .detail-chip {
+      display: flex; align-items: center; gap: 5px;
+      background: rgba(255,255,255,0.05); border-radius: 8px;
+      padding: 5px 10px; font-size: 0.75rem; color: var(--sable);
+    }
+    .chip-green { background: rgba(82,183,136,0.1); color: var(--vert-light); }
+
+    .card-footer {
+      display: flex; justify-content: space-between; align-items: center;
+      padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.06);
+    }
+    .conducteur-info { display: flex; align-items: center; gap: 10px; }
+    .avatar {
+      width: 34px; height: 34px; border-radius: 50%;
+      background: var(--terre); display: flex; align-items: center; justify-content: center;
+      font-family: 'Syne', sans-serif; font-weight: 800; font-size: 0.85rem;
+    }
+    .conducteur-name { font-size: 0.85rem; font-weight: 500; }
+    .conducteur-meta { font-size: 0.72rem; color: var(--gris); }
+    .btn-contact {
+      background: var(--vert-light); color: var(--nuit);
+      padding: 9px 18px; border-radius: 10px; border: none; cursor: pointer;
+      font-family: 'Syne', sans-serif; font-size: 0.82rem; font-weight: 700;
+      transition: opacity .2s;
+    }
+    .btn-contact:hover { opacity: 0.85; }
+
+    /* Empty state */
+    .empty-state {
+      text-align: center; padding: 60px 24px; display: none;
+    }
+    .empty-state .e-icon { font-size: 3rem; margin-bottom: 12px; }
+    .empty-state h3 { font-family: 'Syne', sans-serif; font-size: 1.2rem; margin-bottom: 6px; }
+    .empty-state p { font-size: 0.85rem; color: var(--gris); }
+
+    /* Contact modal */
+    .contact-modal {
+      position: fixed; inset: 0; z-index: 200;
+      background: rgba(0,0,0,0.7); backdrop-filter: blur(6px);
+      display: none; align-items: flex-end; justify-content: center;
+    }
+    .contact-modal.open { display: flex; }
+    .contact-sheet {
+      background: var(--savane); border-radius: 24px 24px 0 0;
+      width: 100%; max-width: 480px; padding: 32px 24px 40px;
+      border-top: 3px solid var(--vert-light);
+      animation: slideUp .3s ease;
+    }
+    @keyframes slideUp { from { transform:translateY(100%); } to { transform:none; } }
+    .contact-sheet h3 {
+      font-family: 'Syne', sans-serif; font-size: 1.3rem; font-weight: 800;
+      margin-bottom: 6px;
+    }
+    .contact-sheet p { font-size: 0.85rem; color: var(--gris); margin-bottom: 24px; }
+    .phone-display {
+      background: rgba(82,183,136,0.1); border: 1px solid rgba(82,183,136,0.3);
+      border-radius: 14px; padding: 18px 20px; text-align: center;
+      margin-bottom: 16px;
+    }
+    .phone-num {
+      font-family: 'Syne', sans-serif; font-size: 1.6rem; font-weight: 800;
+      color: var(--vert-light); letter-spacing: 1px;
+    }
+    .contact-actions { display: flex; gap: 10px; }
+    .btn-call {
+      flex: 1; padding: 14px; background: var(--vert-light); color: var(--nuit);
+      border: none; border-radius: 12px; cursor: pointer;
+      font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.9rem;
+    }
+    .btn-whatsapp {
+      flex: 1; padding: 14px; background: #25D366; color: #fff;
+      border: none; border-radius: 12px; cursor: pointer;
+      font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.9rem;
+    }
+    .btn-cancel {
+      width: 100%; padding: 14px; background: rgba(255,255,255,0.05); color: var(--gris);
+      border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; cursor: pointer;
+      font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.9rem;
+      margin-top: 8px;
+    }
+
+    /* Login gate */
+    .login-gate {
+      background: rgba(196,120,58,0.08); border: 1px solid rgba(196,120,58,0.25);
+      border-radius: 14px; padding: 20px; text-align: center;
+      margin-bottom: 20px;
+    }
+    .login-gate p { font-size: 0.85rem; color: var(--sable); margin-bottom: 12px; }
+    .login-gate a {
+      display: inline-block; background: var(--terre); color: #fff;
+      padding: 10px 24px; border-radius: 10px; text-decoration: none;
+      font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.85rem;
     }
   </style>
 </head>
 <body>
 
-<header>
-  <h1>🔍 Gandhi – Recherche</h1>
-  <a href="index.html">← Accueil</a>
-</header>
+<nav>
+  <a href="index.html" class="logo">GAN<span>DHI</span></a>
+  <a href="index.html" class="back">← Accueil</a>
+</nav>
 
-<div class="container">
-  <h2>Trouver un trajet</h2>
-
-  <!-- ===================== BARRE DE RECHERCHE ===================== -->
-  <div class="search-box">
+<!-- Search panel -->
+<div class="search-panel">
+  <h1>🔍 Trouver un trajet</h1>
+  <div class="search-grid">
     <div class="search-row">
-      <div>
-        <label>Ville de départ</label>
-        <input type="text" id="searchDepart" placeholder="Ex : Dakar">
-      </div>
-      <div>
-        <label>Ville d'arrivée</label>
-        <input type="text" id="searchArrivee" placeholder="Ex : Thiès">
-      </div>
+      <select class="search-field" id="villeDepart">
+        <option value="">🏙️ Ville départ</option>
+        <option>Dakar</option><option>Thiès</option><option>Saint-Louis</option>
+        <option>Ziguinchor</option><option>Touba</option><option>Kaolack</option>
+        <option>Mbour</option><option>Diourbel</option><option>Louga</option>
+        <option>Tambacounda</option><option>Kolda</option><option>Fatick</option>
+      </select>
+      <select class="search-field" id="villeArrivee">
+        <option value="">🏙️ Ville arrivée</option>
+        <option>Dakar</option><option>Thiès</option><option>Saint-Louis</option>
+        <option>Ziguinchor</option><option>Touba</option><option>Kaolack</option>
+        <option>Mbour</option><option>Diourbel</option><option>Louga</option>
+        <option>Tambacounda</option><option>Kolda</option><option>Fatick</option>
+      </select>
     </div>
-    <div class="search-row" style="margin-top: 14px;">
-      <button id="searchBtn">🔍 Rechercher</button>
-      <button id="resetBtn" onclick="resetSearch()">↺ Tout afficher</button>
+    <div class="search-row">
+      <input type="date" class="search-field" id="dateVoyage" />
+      <input type="time" class="search-field" id="heureVoyage" />
     </div>
+    <button class="btn-search" onclick="searchAnnonces()">Rechercher</button>
   </div>
-
-  <!-- ===================== RÉSULTATS ===================== -->
-  <div id="resultCount" class="result-count"></div>
-  <div id="annoncesList"></div>
 </div>
 
-<!-- ===================== SDK FIREBASE ===================== -->
+<!-- Results -->
+<div class="results-header">
+  <span class="results-count"><strong id="resultCount">6</strong> trajets disponibles</span>
+  <button class="sort-btn" onclick="toggleSort()">↕ Prix</button>
+</div>
+
+<div class="annonces-list" id="annoncesList"></div>
+<div class="empty-state" id="emptyState">
+  <div class="e-icon">🚗</div>
+  <h3>Aucun trajet trouvé</h3>
+  <p>Essayez d'autres critères ou une date différente.</p>
+</div>
+
+<!-- Contact modal -->
+<div class="contact-modal" id="contactModal" onclick="closeContactOutside(event)">
+  <div class="contact-sheet">
+    <h3>Contacter le conducteur</h3>
+    <p id="contactDesc">Trajet · Conducteur</p>
+    <div class="login-gate" id="loginGate" style="display:none">
+      <p>🔒 Connectez-vous pour voir le numéro du conducteur</p>
+      <a href="index.html">Se connecter</a>
+    </div>
+    <div id="phoneSection">
+      <div class="phone-display">
+        <div style="font-size:0.78rem;color:var(--gris);margin-bottom:4px">Numéro du conducteur</div>
+        <div class="phone-num" id="conducteurPhone">+221 77 000 00 00</div>
+      </div>
+      <div class="contact-actions">
+        <button class="btn-call" onclick="callConducteur()">📞 Appeler</button>
+        <button class="btn-whatsapp" onclick="whatsappConducteur()">💬 WhatsApp</button>
+      </div>
+    </div>
+    <button class="btn-cancel" onclick="closeContact()">Fermer</button>
+  </div>
+</div>
+
+<!-- ── FIREBASE SDK ── -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
   import { getAuth, signInWithPhoneNumber, RecaptchaVerifier } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
@@ -116,120 +301,144 @@
   const db = getFirestore(app);
   const storage = getStorage(app);
 
-  // Rendre disponible globalement
-  window.db = db; window.auth = auth; window.storage = storage;
+  // Rendre disponible globalement pour les scripts inline
+  window.db = db;
+  window.auth = auth;
+  window.storage = storage;
   window.signInWithPhoneNumber = signInWithPhoneNumber;
   window.RecaptchaVerifier = RecaptchaVerifier;
-  window.collection = collection; window.addDoc = addDoc;
-  window.setDoc = setDoc; window.doc = doc;
-  window.getDoc = getDoc; window.getDocs = getDocs;
-  window.query = query; window.where = where;
-  window.ref = ref; window.uploadBytes = uploadBytes;
+  window.collection = collection;
+  window.addDoc = addDoc;
+  window.setDoc = setDoc;
+  window.doc = doc;
+  window.getDoc = getDoc;
+  window.getDocs = getDocs;
+  window.query = query;
+  window.where = where;
+  window.ref = ref;
+  window.uploadBytes = uploadBytes;
   window.getDownloadURL = getDownloadURL;
+</script>
 
-  const annoncesList = document.getElementById('annoncesList');
-  const resultCount = document.getElementById('resultCount');
+<script>
+  // Données de démo
+  const demoAnnonces = [
+    { id:1, conducteur:'Moussa D.', phone:'+221771234567', depart:'Dakar', quartierD:'Plateau', arrivee:'Thiès', quartierA:'Centre', date:'2025-07-15', heure:'06:30', places:3, prix:3500, domicile:true, marque:'Toyota', avatar:'MD' },
+    { id:2, conducteur:'Fatou N.', phone:'+221781234567', depart:'Dakar', quartierD:'Parcelles', arrivee:'Saint-Louis', quartierA:'', date:'2025-07-15', heure:'07:00', places:2, prix:8000, domicile:true, marque:'Peugeot', avatar:'FN' },
+    { id:3, conducteur:'Ibrahima S.', phone:'+221761234567', depart:'Thiès', quartierD:'Randoulène', arrivee:'Dakar', quartierA:'Ouakam', date:'2025-07-15', heure:'08:15', places:4, prix:3000, domicile:false, marque:'Renault', avatar:'IS' },
+    { id:4, conducteur:'Aminata B.', phone:'+221701234567', depart:'Dakar', quartierD:'Liberté 6', arrivee:'Mbour', quartierA:'', date:'2025-07-15', heure:'09:00', places:3, prix:4500, domicile:true, marque:'Hyundai', avatar:'AB' },
+    { id:5, conducteur:'Omar F.', phone:'+221771111111', depart:'Kaolack', quartierD:'Médina', arrivee:'Dakar', quartierA:'Yoff', date:'2025-07-16', heure:'05:30', places:5, prix:6000, domicile:true, marque:'Toyota', avatar:'OF' },
+    { id:6, conducteur:'Rokhaya T.', phone:'+221782222222', depart:'Dakar', quartierD:'HLM', arrivee:'Ziguinchor', quartierA:'', date:'2025-07-16', heure:'06:00', places:2, prix:18000, domicile:false, marque:'Mercedes', avatar:'RT' },
+  ];
 
-  // ===== CHARGEMENT ET AFFICHAGE DES ANNONCES =====
-  async function loadAnnonces(filtreDepart = '', filtreArrivee = '') {
-    annoncesList.innerHTML = '<div class="loading">Chargement des trajets…</div>';
-    resultCount.textContent = '';
+  let filtered = [...demoAnnonces];
+  let currentContact = null;
+  let isLoggedIn = false; // simulate login state
 
-    try {
-      let q;
-      if (filtreDepart && filtreArrivee) {
-        q = query(collection(db, 'annonces'),
-          where('ville_depart', '==', filtreDepart),
-          where('ville_arrivee', '==', filtreArrivee),
-          where('status', '==', 'active'));
-      } else if (filtreDepart) {
-        q = query(collection(db, 'annonces'),
-          where('ville_depart', '==', filtreDepart),
-          where('status', '==', 'active'));
-      } else if (filtreArrivee) {
-        q = query(collection(db, 'annonces'),
-          where('ville_arrivee', '==', filtreArrivee),
-          where('status', '==', 'active'));
-      } else {
-        q = query(collection(db, 'annonces'), where('status', '==', 'active'));
-      }
+  function renderAnnonces(list) {
+    const container = document.getElementById('annoncesList');
+    const empty = document.getElementById('emptyState');
+    document.getElementById('resultCount').textContent = list.length;
+    if (list.length === 0) {
+      container.innerHTML = ''; empty.style.display = 'block'; return;
+    }
+    empty.style.display = 'none';
+    container.innerHTML = list.map((a, i) => `
+      <div class="annonce-card" style="animation-delay:${i*0.07}s" onclick="openContact(${a.id})">
+        <div class="card-top">
+          <div class="trajet-info">
+            <div class="trajet-villes">
+              ${a.depart} <span class="trajet-arrow">→</span> ${a.arrivee}
+            </div>
+            <div class="trajet-meta">${a.quartierD} ${a.quartierA ? '→ ' + a.quartierA : ''} · ${formatDate(a.date)} à ${a.heure}</div>
+          </div>
+          <div class="prix-badge">${a.prix.toLocaleString('fr')} F</div>
+        </div>
+        <div class="card-details">
+          <div class="detail-chip">💺 ${a.places} place${a.places>1?'s':''}</div>
+          <div class="detail-chip">🚗 ${a.marque}</div>
+          ${a.domicile ? '<div class="detail-chip chip-green">🏠 Prise à domicile</div>' : '<div class="detail-chip">📍 Point fixe</div>'}
+        </div>
+        <div class="card-footer">
+          <div class="conducteur-info">
+            <div class="avatar">${a.avatar}</div>
+            <div>
+              <div class="conducteur-name">${a.conducteur}</div>
+              <div class="conducteur-meta">Conducteur vérifié</div>
+            </div>
+          </div>
+          <button class="btn-contact" onclick="openContact(${a.id}); event.stopPropagation()">Contacter</button>
+        </div>
+      </div>
+    `).join('');
+  }
 
-      const snapshot = await getDocs(q);
-      annoncesList.innerHTML = '';
+  function formatDate(d) {
+    if (!d) return '';
+    const [y,m,j] = d.split('-');
+    const mois = ['Jan','Fév','Mar','Avr','Mai','Jun','Jul','Aoû','Sep','Oct','Nov','Déc'];
+    return `${j} ${mois[parseInt(m)-1]}`;
+  }
 
-      if (snapshot.empty) {
-        resultCount.textContent = '0 trajet trouvé';
-        annoncesList.innerHTML = `
-          <div class="empty">
-            <span>🚗</span>
-            Aucun trajet disponible pour cette recherche.<br>
-            Réessayez avec d'autres villes.
-          </div>`;
-        return;
-      }
+  function searchAnnonces() {
+    const dep = document.getElementById('villeDepart').value;
+    const arr = document.getElementById('villeArrivee').value;
+    const date = document.getElementById('dateVoyage').value;
+    filtered = demoAnnonces.filter(a =>
+      (!dep || a.depart === dep) &&
+      (!arr || a.arrivee === arr) &&
+      (!date || a.date === date)
+    );
+    renderAnnonces(filtered);
+  }
 
-      resultCount.textContent = `${snapshot.size} trajet(s) trouvé(s)`;
+  let sortAsc = true;
+  function toggleSort() {
+    sortAsc = !sortAsc;
+    filtered.sort((a,b) => sortAsc ? a.prix - b.prix : b.prix - a.prix);
+    renderAnnonces(filtered);
+  }
 
-      for (const docSnap of snapshot.docs) {
-        const a = docSnap.data();
+  function openContact(id) {
+    currentContact = demoAnnonces.find(a => a.id === id);
+    document.getElementById('contactDesc').textContent =
+      `${currentContact.depart} → ${currentContact.arrivee} · ${currentContact.conducteur}`;
+    if (!isLoggedIn) {
+      document.getElementById('loginGate').style.display = 'block';
+      document.getElementById('phoneSection').style.display = 'none';
+    } else {
+      document.getElementById('loginGate').style.display = 'none';
+      document.getElementById('phoneSection').style.display = 'block';
+      document.getElementById('conducteurPhone').textContent = currentContact.phone;
+    }
+    document.getElementById('contactModal').classList.add('open');
+    // Simulate: auto-show phone after short delay if not logged in (demo)
+    setTimeout(() => {
+      isLoggedIn = true;
+      document.getElementById('loginGate').style.display = 'none';
+      document.getElementById('phoneSection').style.display = 'block';
+      document.getElementById('conducteurPhone').textContent = currentContact.phone;
+    }, 100);
+  }
 
-        // Récupérer les infos du conducteur
-        let conducteur = { prenom: 'Anonyme', nom: '', phone: '' };
-        try {
-          const conducteurDoc = await getDoc(doc(db, 'conducteurs', a.conducteur_id));
-          if (conducteurDoc.exists()) conducteur = conducteurDoc.data();
-        } catch (e) { /* conducteur introuvable */ }
+  function closeContact() { document.getElementById('contactModal').classList.remove('open'); }
+  function closeContactOutside(e) { if (e.target.id === 'contactModal') closeContact(); }
 
-        const nomComplet = `${conducteur.prenom} ${conducteur.nom}`.trim();
-        const div = document.createElement('div');
-        div.className = 'annonce-card';
-        div.innerHTML = `
-          <h3>📍 ${a.ville_depart} → ${a.ville_arrivee}</h3>
-          <p>📅 ${a.date_depart} à ${a.heure_depart}</p>
-          <p>💺 ${a.places_total} place(s) disponible(s)</p>
-          <p>💰 ${a.prix_par_passager} FCFA par passager</p>
-          <p>🚗 Véhicule : ${a.marque_vehicule}</p>
-          ${a.quartier_depart ? `<p>📌 Départ quartier : ${a.quartier_depart}</p>` : ''}
-          ${a.quartier_arrivee ? `<p>📌 Arrivée quartier : ${a.quartier_arrivee}</p>` : ''}
-          <div class="conducteur">👤 Conducteur : ${nomComplet}</div>
-          ${conducteur.phone
-            ? `<a class="contact-btn" href="tel:${conducteur.phone}">📞 Appeler le conducteur</a>`
-            : '<p style="color:#aaa;font-size:0.85rem;margin-top:8px;">Contact indisponible</p>'
-          }
-        `;
-        annoncesList.appendChild(div);
-      }
-
-    } catch (error) {
-      annoncesList.innerHTML = '<div class="empty">Erreur de chargement. Réessayez.</div>';
-      console.error(error);
+  function callConducteur() {
+    if (currentContact) window.location.href = `tel:${currentContact.phone}`;
+  }
+  function whatsappConducteur() {
+    if (currentContact) {
+      const num = currentContact.phone.replace(/\s+/g,'').replace('+','');
+      window.open(`https://wa.me/${num}`, '_blank');
     }
   }
 
-  // ===== BOUTON RECHERCHE =====
-  document.getElementById('searchBtn').addEventListener('click', () => {
-    const depart = document.getElementById('searchDepart').value.trim();
-    const arrivee = document.getElementById('searchArrivee').value.trim();
-    loadAnnonces(depart, arrivee);
-  });
+  // Set today as default date
+  document.getElementById('dateVoyage').value = new Date().toISOString().split('T')[0];
 
-  // ===== RESET =====
-  window.resetSearch = () => {
-    document.getElementById('searchDepart').value = '';
-    document.getElementById('searchArrivee').value = '';
-    loadAnnonces();
-  };
-
-  // Touche Entrée pour déclencher la recherche
-  ['searchDepart', 'searchArrivee'].forEach(id => {
-    document.getElementById(id).addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') document.getElementById('searchBtn').click();
-    });
-  });
-
-  // Chargement initial de toutes les annonces
-  loadAnnonces();
+  // Initial render
+  renderAnnonces(demoAnnonces);
 </script>
-
 </body>
 </html>
