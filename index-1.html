@@ -8,26 +8,13 @@
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
   <style>
     :root {
-      --sable: #F5E6C8;
-      --terre: #C4783A;
-      --nuit: #0D1117;
-      --savane: #2A1F14;
-      --vert: #2D6A4F;
-      --vert-light: #52B788;
-      --blanc: #FEFAF3;
-      --gris: #8A7B6E;
-      --radius: 16px;
+      --sable: #F5E6C8; --terre: #C4783A; --nuit: #0D1117;
+      --savane: #2A1F14; --vert: #2D6A4F; --vert-light: #52B788;
+      --blanc: #FEFAF3; --gris: #8A7B6E; --radius: 16px;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; }
-    body {
-      font-family: 'DM Sans', sans-serif;
-      font-size: 16px;
-      background: var(--nuit);
-      color: var(--blanc);
-      min-height: 100vh;
-      overflow-x: hidden;
-    }
+    body { font-family: 'DM Sans', sans-serif; font-size: 16px; background: var(--nuit); color: var(--blanc); min-height: 100vh; overflow-x: hidden; }
     @media (max-width: 600px) {
       body { font-size: 14px; }
       h1 { font-size: 1.5rem !important; }
@@ -35,506 +22,217 @@
       button, .btn-primary, .btn-secondary { font-size: 1rem; padding: 12px 16px; }
       input, select, textarea { font-size: 16px !important; }
     }
-
-    /* ── NAV ── */
     nav {
       position: fixed; top: 0; left: 0; right: 0; z-index: 100;
       display: flex; align-items: center; justify-content: space-between;
       padding: 18px 24px;
-      background: rgba(13,17,23,0.85);
-      backdrop-filter: blur(12px);
+      background: rgba(13,17,23,0.85); backdrop-filter: blur(12px);
       border-bottom: 1px solid rgba(196,120,58,0.15);
     }
-    .logo {
-      font-family: 'Syne', sans-serif;
-      font-size: 1.6rem; font-weight: 800;
-      letter-spacing: -1px;
-      color: var(--terre);
-    }
+    .logo { font-family: 'Syne', sans-serif; font-size: 1.6rem; font-weight: 800; letter-spacing: -1px; color: var(--terre); }
     .logo span { color: var(--vert-light); }
-    nav a {
-      color: var(--sable); text-decoration: none; font-size: 0.9rem;
-      padding: 8px 18px; border-radius: 40px;
-      border: 1px solid rgba(245,230,200,0.2);
-      transition: all .25s;
-    }
+    nav a { color: var(--sable); text-decoration: none; font-size: 0.9rem; padding: 8px 18px; border-radius: 40px; border: 1px solid rgba(245,230,200,0.2); transition: all .25s; }
     nav a:hover { background: var(--terre); color: #fff; border-color: var(--terre); }
-
-    /* ── HERO ── */
-    .hero {
-      min-height: 100vh;
-      display: flex; flex-direction: column; justify-content: center;
-      padding: 100px 24px 60px;
-      position: relative; overflow: hidden;
-    }
-    .hero-bg {
-      position: absolute; inset: 0;
-      background:
-        radial-gradient(ellipse 80% 60% at 70% 40%, rgba(196,120,58,0.18) 0%, transparent 60%),
-        radial-gradient(ellipse 60% 50% at 20% 80%, rgba(45,106,79,0.15) 0%, transparent 55%),
-        var(--nuit);
-    }
-    .hero-pattern {
-      position: absolute; inset: 0; opacity: 0.04;
-      background-image: repeating-linear-gradient(45deg, var(--terre) 0, var(--terre) 1px, transparent 0, transparent 50%);
-      background-size: 24px 24px;
-    }
+    .hero { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; padding: 100px 24px 60px; position: relative; overflow: hidden; }
+    .hero-bg { position: absolute; inset: 0; background: radial-gradient(ellipse 80% 60% at 70% 40%, rgba(196,120,58,0.18) 0%, transparent 60%), radial-gradient(ellipse 60% 50% at 20% 80%, rgba(45,106,79,0.15) 0%, transparent 55%), var(--nuit); }
+    .hero-pattern { position: absolute; inset: 0; opacity: 0.04; background-image: repeating-linear-gradient(45deg, var(--terre) 0, var(--terre) 1px, transparent 0, transparent 50%); background-size: 24px 24px; }
     .hero-content { position: relative; max-width: 480px; }
-    .badge {
-      display: inline-flex; align-items: center; gap: 8px;
-      background: rgba(196,120,58,0.15);
-      border: 1px solid rgba(196,120,58,0.4);
-      color: var(--terre); padding: 6px 14px; border-radius: 40px;
-      font-size: 0.78rem; font-weight: 500; letter-spacing: .5px;
-      margin-bottom: 24px;
-      animation: fadeUp .6s ease both;
-    }
+    .badge { display: inline-flex; align-items: center; gap: 8px; background: rgba(196,120,58,0.15); border: 1px solid rgba(196,120,58,0.4); color: var(--terre); padding: 6px 14px; border-radius: 40px; font-size: 0.78rem; font-weight: 500; letter-spacing: .5px; margin-bottom: 24px; animation: fadeUp .6s ease both; }
     .badge::before { content: '🇸🇳'; font-size: 1rem; }
-    h1 {
-      font-family: 'Syne', sans-serif;
-      font-size: clamp(2.6rem, 9vw, 4.2rem);
-      font-weight: 800; line-height: 1.05;
-      letter-spacing: -2px;
-      animation: fadeUp .6s .1s ease both;
-    }
+    h1 { font-family: 'Syne', sans-serif; font-size: clamp(2.6rem, 9vw, 4.2rem); font-weight: 800; line-height: 1.05; letter-spacing: -2px; animation: fadeUp .6s .1s ease both; }
     h1 .accent { color: var(--terre); }
     h1 .accent2 { color: var(--vert-light); }
-    .hero-sub {
-      margin-top: 20px; font-size: 1.05rem; color: var(--sable);
-      opacity: 0.8; line-height: 1.6; max-width: 360px;
-      animation: fadeUp .6s .2s ease both;
-    }
-    .cta-group {
-      display: flex; flex-direction: column; gap: 12px;
-      margin-top: 36px;
-      animation: fadeUp .6s .3s ease both;
-    }
-    .btn-primary {
-      display: flex; align-items: center; justify-content: center; gap: 10px;
-      background: var(--terre); color: #fff;
-      padding: 16px 28px; border-radius: var(--radius);
-      font-family: 'Syne', sans-serif; font-size: 1rem; font-weight: 700;
-      text-decoration: none; border: none; cursor: pointer;
-      transition: transform .2s, box-shadow .2s;
-      box-shadow: 0 4px 24px rgba(196,120,58,0.35);
-    }
+    .hero-sub { margin-top: 20px; font-size: 1.05rem; color: var(--sable); opacity: 0.8; line-height: 1.6; max-width: 360px; animation: fadeUp .6s .2s ease both; }
+    .cta-group { display: flex; flex-direction: column; gap: 12px; margin-top: 36px; animation: fadeUp .6s .3s ease both; }
+    .btn-primary { display: flex; align-items: center; justify-content: center; gap: 10px; background: var(--terre); color: #fff; padding: 16px 28px; border-radius: var(--radius); font-family: 'Syne', sans-serif; font-size: 1rem; font-weight: 700; text-decoration: none; border: none; cursor: pointer; transition: transform .2s, box-shadow .2s; box-shadow: 0 4px 24px rgba(196,120,58,0.35); }
     .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(196,120,58,0.5); }
-    .btn-secondary {
-      display: flex; align-items: center; justify-content: center; gap: 10px;
-      background: transparent; color: var(--vert-light);
-      padding: 15px 28px; border-radius: var(--radius);
-      font-family: 'Syne', sans-serif; font-size: 1rem; font-weight: 700;
-      text-decoration: none; border: 2px solid var(--vert-light); cursor: pointer;
-      transition: all .2s;
-    }
+    .btn-secondary { display: flex; align-items: center; justify-content: center; gap: 10px; background: transparent; color: var(--vert-light); padding: 15px 28px; border-radius: var(--radius); font-family: 'Syne', sans-serif; font-size: 1rem; font-weight: 700; text-decoration: none; border: 2px solid var(--vert-light); cursor: pointer; transition: all .2s; }
     .btn-secondary:hover { background: var(--vert-light); color: var(--nuit); }
-    .icon-car { font-size: 1.3rem; }
-
-    /* Stats */
-    .stats {
-      display: flex; gap: 24px; margin-top: 48px;
-      animation: fadeUp .6s .4s ease both;
-    }
+    .stats { display: flex; gap: 24px; margin-top: 48px; animation: fadeUp .6s .4s ease both; }
     .stat { text-align: center; }
-    .stat-num {
-      font-family: 'Syne', sans-serif; font-size: 1.8rem; font-weight: 800;
-      color: var(--terre);
-    }
+    .stat-num { font-family: 'Syne', sans-serif; font-size: 1.8rem; font-weight: 800; color: var(--terre); }
     .stat-label { font-size: 0.72rem; color: var(--gris); text-transform: uppercase; letter-spacing: 1px; }
-
-    /* ── FEATURES ── */
     .section { padding: 80px 24px; }
-    .section-title {
-      font-family: 'Syne', sans-serif; font-size: 1.8rem; font-weight: 800;
-      margin-bottom: 8px; letter-spacing: -1px;
-    }
+    .section-title { font-family: 'Syne', sans-serif; font-size: 1.8rem; font-weight: 800; margin-bottom: 8px; letter-spacing: -1px; }
     .section-sub { color: var(--gris); font-size: 0.95rem; margin-bottom: 40px; }
-    .features-grid {
-      display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
-    }
-    .feature-card {
-      background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: var(--radius); padding: 24px 20px;
-      transition: border-color .25s, transform .25s;
-    }
+    .features-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .feature-card { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: var(--radius); padding: 24px 20px; transition: border-color .25s, transform .25s; }
     .feature-card:hover { border-color: var(--terre); transform: translateY(-3px); }
-    .feature-icon {
-      font-size: 2rem; margin-bottom: 12px;
-    }
-    .feature-card h3 {
-      font-family: 'Syne', sans-serif; font-size: 1rem; font-weight: 700;
-      margin-bottom: 6px;
-    }
+    .feature-icon { font-size: 2rem; margin-bottom: 12px; }
+    .feature-card h3 { font-family: 'Syne', sans-serif; font-size: 1rem; font-weight: 700; margin-bottom: 6px; }
     .feature-card p { font-size: 0.82rem; color: var(--gris); line-height: 1.5; }
-
-    /* ── HOW IT WORKS ── */
-    .how-bg {
-      background: rgba(255,255,255,0.02);
-      border-top: 1px solid rgba(255,255,255,0.05);
-      border-bottom: 1px solid rgba(255,255,255,0.05);
-    }
-    .tabs {
-      display: flex; gap: 0; margin-bottom: 32px;
-      background: rgba(255,255,255,0.05); border-radius: 12px; padding: 4px;
-    }
-    .tab {
-      flex: 1; padding: 10px; border-radius: 10px; border: none; cursor: pointer;
-      font-family: 'Syne', sans-serif; font-size: 0.85rem; font-weight: 700;
-      background: transparent; color: var(--gris); transition: all .2s;
-    }
+    .how-bg { background: rgba(255,255,255,0.02); border-top: 1px solid rgba(255,255,255,0.05); border-bottom: 1px solid rgba(255,255,255,0.05); }
+    .tabs { display: flex; gap: 0; margin-bottom: 32px; background: rgba(255,255,255,0.05); border-radius: 12px; padding: 4px; }
+    .tab { flex: 1; padding: 10px; border-radius: 10px; border: none; cursor: pointer; font-family: 'Syne', sans-serif; font-size: 0.85rem; font-weight: 700; background: transparent; color: var(--gris); transition: all .2s; }
     .tab.active { background: var(--terre); color: #fff; }
     .steps { display: none; }
     .steps.active { display: flex; flex-direction: column; gap: 20px; }
-    .step {
-      display: flex; gap: 16px; align-items: flex-start;
-    }
-    .step-num {
-      min-width: 36px; height: 36px;
-      background: var(--terre); border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      font-family: 'Syne', sans-serif; font-weight: 800; font-size: 0.9rem;
-    }
-    .step-content h4 {
-      font-family: 'Syne', sans-serif; font-weight: 700; margin-bottom: 4px;
-    }
-    .step-content p { font-size: 0.85rem; color: var(--gris); line-height: 1.5; }
+    .step { display: flex; gap: 16px; align-items: flex-start; }
+    .step-num { min-width: 36px; height: 36px; background: var(--terre); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'Syne', sans-serif; font-weight: 800; font-size: 0.9rem; }
+    .step-text h4 { font-family: 'Syne', sans-serif; font-weight: 700; margin-bottom: 4px; }
+    .step-text p { font-size: 0.85rem; color: var(--gris); line-height: 1.5; }
+    .pricing-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .price-card { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: var(--radius); padding: 28px 20px; text-align: center; }
+    .price-card h3 { font-family: 'Syne', sans-serif; font-size: 1rem; margin-bottom: 12px; }
+    .price-num { font-family: 'Syne', sans-serif; font-size: 2.4rem; font-weight: 800; color: var(--vert-light); }
+    .price-sub { font-size: 0.78rem; color: var(--gris); margin-top: 4px; }
+    footer { padding: 40px 24px; text-align: center; border-top: 1px solid rgba(255,255,255,0.05); }
+    .footer-logo { font-family: 'Syne', sans-serif; font-size: 1.4rem; font-weight: 800; color: var(--terre); margin-bottom: 8px; }
+    .footer-sub { font-size: 0.82rem; color: var(--gris); }
+    @keyframes fadeUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:none; } }
 
-    /* ── PRICING ── */
-    .pricing-card {
-      background: linear-gradient(135deg, rgba(196,120,58,0.12), rgba(45,106,79,0.08));
-      border: 1px solid rgba(196,120,58,0.3);
-      border-radius: 20px; padding: 32px 24px; text-align: center;
-      margin-bottom: 16px;
-    }
-    .price-big {
-      font-family: 'Syne', sans-serif; font-size: 3rem; font-weight: 800;
-      color: var(--terre);
-    }
-    .price-unit { font-size: 1rem; color: var(--gris); }
-    .price-desc { margin-top: 12px; font-size: 0.9rem; color: var(--sable); }
-    .free-card {
-      background: rgba(82,183,136,0.08);
-      border: 1px solid rgba(82,183,136,0.25);
-      border-radius: 20px; padding: 24px; text-align: center;
-    }
-    .free-label {
-      font-family: 'Syne', sans-serif; font-size: 2rem; font-weight: 800;
-      color: var(--vert-light);
-    }
+    /* Notify */
+    .notify-bar { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px); z-index: 999; background: var(--vert); color: #fff; padding: 12px 24px; border-radius: 40px; font-size: 0.9rem; font-weight: 500; transition: transform .35s ease; white-space: nowrap; }
+    .notify-bar.show { transform: translateX(-50%) translateY(0); }
 
-    /* ── PAYMENT METHODS ── */
-    .pay-methods {
-      display: flex; gap: 12px; margin-top: 24px;
-    }
-    .pay-badge {
-      flex: 1; padding: 14px 10px; border-radius: 12px; text-align: center;
-      font-family: 'Syne', sans-serif; font-size: 0.85rem; font-weight: 700;
-      border: 1px solid;
-    }
-    .pay-wave { background: rgba(0,122,255,0.1); border-color: rgba(0,122,255,0.3); color: #4DA6FF; }
-    .pay-orange { background: rgba(255,140,0,0.1); border-color: rgba(255,140,0,0.3); color: #FFB347; }
-
-    /* ── FOOTER ── */
-    footer {
-      padding: 40px 24px; text-align: center;
-      border-top: 1px solid rgba(255,255,255,0.07);
-    }
-    .footer-logo {
-      font-family: 'Syne', sans-serif; font-size: 1.4rem; font-weight: 800;
-      color: var(--terre); margin-bottom: 8px;
-    }
-    footer p { font-size: 0.8rem; color: var(--gris); }
-
-    /* ── ANIMATIONS ── */
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(20px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-
-    /* ── MODAL ── */
-    .modal-overlay {
-      position: fixed; inset: 0; z-index: 200;
-      background: rgba(0,0,0,0.75); backdrop-filter: blur(6px);
-      display: none; align-items: flex-end; justify-content: center;
-    }
+    /* Modal */
+    .modal-overlay { position: fixed; inset: 0; z-index: 300; background: rgba(0,0,0,0.8); backdrop-filter: blur(8px); display: none; align-items: flex-end; justify-content: center; }
     .modal-overlay.open { display: flex; }
-    .modal {
-      background: var(--savane);
-      border-radius: 24px 24px 0 0;
-      width: 100%; max-width: 480px; max-height: 90vh;
-      overflow-y: auto;
-      padding: 32px 24px 40px;
-      border-top: 3px solid var(--terre);
-      animation: slideUp .3s ease;
-    }
-    @keyframes slideUp {
-      from { transform: translateY(100%); }
-      to   { transform: translateY(0); }
-    }
-    .modal-close {
-      position: absolute; top: 16px; right: 20px;
-      background: none; border: none; color: var(--gris);
-      font-size: 1.4rem; cursor: pointer;
-    }
-    .modal h2 {
-      font-family: 'Syne', sans-serif; font-size: 1.5rem; font-weight: 800;
-      margin-bottom: 6px; letter-spacing: -1px;
-    }
-    .modal-sub { font-size: 0.85rem; color: var(--gris); margin-bottom: 28px; }
-    .form-group { margin-bottom: 18px; }
-    .form-group label {
-      display: block; font-size: 0.8rem; font-weight: 500;
-      color: var(--sable); margin-bottom: 6px; text-transform: uppercase; letter-spacing: .5px;
-    }
-    .form-group input, .form-group select, .form-group textarea {
-      width: 100%; padding: 14px 16px;
-      background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12);
-      border-radius: 12px; color: var(--blanc); font-family: 'DM Sans', sans-serif; font-size: 0.95rem;
-      outline: none; transition: border-color .2s;
-    }
-    .form-group input:focus, .form-group select:focus {
-      border-color: var(--terre);
-    }
-    .form-group select option { background: var(--savane); }
-    .upload-zone {
-      border: 2px dashed rgba(196,120,58,0.35);
-      border-radius: 12px; padding: 20px; text-align: center;
-      cursor: pointer; transition: border-color .2s;
-      position: relative;
-    }
-    .upload-zone:hover { border-color: var(--terre); }
-    .upload-zone input[type=file] {
-      position: absolute; inset: 0; opacity: 0; cursor: pointer;
-      background: none; border: none; width: 100%; height: 100%;
-    }
-    .upload-icon { font-size: 2rem; margin-bottom: 6px; }
-    .upload-zone p { font-size: 0.8rem; color: var(--gris); }
-    .upload-zone strong { color: var(--terre); font-size: 0.85rem; }
-    .role-selector { display: flex; gap: 12px; margin-bottom: 28px; }
-    .role-btn {
-      flex: 1; padding: 18px 10px; border-radius: var(--radius); border: 2px solid;
-      cursor: pointer; text-align: center; transition: all .2s; background: transparent;
-    }
-    .role-btn .role-icon { font-size: 1.8rem; display: block; margin-bottom: 6px; }
-    .role-btn .role-name {
-      font-family: 'Syne', sans-serif; font-size: 0.9rem; font-weight: 700;
-      display: block;
-    }
-    .role-btn .role-desc { font-size: 0.72rem; color: var(--gris); display: block; margin-top: 2px; }
-    .role-btn.conducteur { border-color: var(--terre); color: var(--sable); }
-    .role-btn.conducteur.selected { background: var(--terre); color: #fff; }
-    .role-btn.passager { border-color: var(--vert-light); color: var(--sable); }
-    .role-btn.passager.selected { background: var(--vert-light); color: var(--nuit); }
-    .otp-row { display: flex; gap: 10px; }
-    .otp-input {
-      flex: 1; text-align: center; font-size: 1.4rem;
-      font-family: 'Syne', sans-serif; font-weight: 800;
-      padding: 14px 8px; background: rgba(255,255,255,0.06);
-      border: 1px solid rgba(255,255,255,0.12); border-radius: 12px;
-      color: var(--blanc); outline: none; max-width: 60px;
-    }
-    .otp-input:focus { border-color: var(--terre); }
-    .step-indicator {
-      display: flex; gap: 8px; justify-content: center; margin-bottom: 28px;
-    }
-    .step-dot {
-      width: 8px; height: 8px; border-radius: 50%;
-      background: rgba(255,255,255,0.15);
-      transition: all .3s;
-    }
+    .modal-sheet { background: var(--savane); border-radius: 24px 24px 0 0; width: 100%; max-width: 480px; max-height: 92vh; overflow-y: auto; padding: 32px 24px 48px; border-top: 3px solid var(--terre); animation: slideUp .3s ease; position: relative; }
+    @keyframes slideUp { from { transform:translateY(100%); } to { transform:none; } }
+    .modal-close { position: absolute; top: 16px; right: 20px; background: none; border: none; color: var(--gris); font-size: 1.4rem; cursor: pointer; }
+    .modal-sheet h2 { font-family: 'Syne', sans-serif; font-size: 1.4rem; font-weight: 800; margin-bottom: 4px; letter-spacing: -0.5px; }
+    .modal-sub { font-size: 0.85rem; color: var(--gris); margin-bottom: 24px; }
+    .step-indicator { display: flex; gap: 8px; margin-bottom: 24px; }
+    .step-dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.15); }
     .step-dot.active { background: var(--terre); width: 24px; border-radius: 4px; }
     .step-dot.done { background: var(--vert-light); }
-    .notify-bar {
-      position: fixed; top: 80px; left: 16px; right: 16px; z-index: 300;
-      background: var(--vert); color: #fff; padding: 14px 20px; border-radius: 12px;
-      font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.9rem;
-      display: none; align-items: center; gap: 10px;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.3);
-      animation: fadeUp .3s ease;
-    }
-    .notify-bar.show { display: flex; }
+    .form-group { margin-bottom: 16px; }
+    .form-group label { display: block; font-size: 0.76rem; font-weight: 500; color: var(--sable); margin-bottom: 6px; text-transform: uppercase; letter-spacing: .5px; }
+    .form-group input, .form-group select { width: 100%; padding: 13px 14px; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.12); border-radius: 12px; color: var(--blanc); font-family: 'DM Sans', sans-serif; font-size: 0.95rem; outline: none; transition: border-color .2s; }
+    .form-group input:focus, .form-group select:focus { border-color: var(--terre); }
+    .form-group select option { background: var(--savane); }
+    .role-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+    .role-btn { display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 20px 16px; background: rgba(255,255,255,0.04); border: 2px solid rgba(255,255,255,0.08); border-radius: var(--radius); cursor: pointer; transition: all .2s; color: var(--blanc); }
+    .role-btn.selected { border-color: var(--terre); background: rgba(196,120,58,0.1); }
+    .role-icon { font-size: 2rem; }
+    .role-name { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.95rem; }
+    .role-desc { font-size: 0.75rem; color: var(--gris); }
+    .otp-row { display: flex; gap: 12px; justify-content: center; margin: 20px 0; }
+    .otp-input { width: 56px; height: 64px; text-align: center; font-family: 'Syne', sans-serif; font-size: 1.6rem; font-weight: 800; background: rgba(255,255,255,0.07); border: 2px solid rgba(255,255,255,0.15); border-radius: 14px; color: var(--blanc); outline: none; transition: border-color .2s; }
+    .otp-input:focus { border-color: var(--terre); }
+    .upload-zone { border: 2px dashed rgba(255,255,255,0.15); border-radius: 14px; padding: 20px; text-align: center; cursor: pointer; position: relative; transition: border-color .2s; margin-bottom: 8px; }
+    .upload-zone:hover { border-color: var(--terre); }
+    .upload-zone input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+    .upload-icon { font-size: 1.8rem; margin-bottom: 6px; }
+    .upload-zone strong { font-size: 0.9rem; display: block; margin-bottom: 4px; }
+    .upload-zone p { font-size: 0.78rem; color: var(--gris); }
+
+    /* Loading spinner */
+    .spinner { display: inline-block; width: 18px; height: 18px; border: 2px solid rgba(255,255,255,0.3); border-top-color: #fff; border-radius: 50%; animation: spin .7s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .btn-loading { opacity: 0.7; pointer-events: none; }
+
+    /* reCAPTCHA invisible */
+    #recaptcha-container { display: none; }
   </style>
 </head>
 <body>
 
-<!-- Notification -->
-<div class="notify-bar" id="notifyBar">✅ <span id="notifyMsg"></span></div>
+<!-- Notify bar -->
+<div class="notify-bar" id="notifyBar"><span id="notifyMsg"></span></div>
 
-<!-- Nav -->
+<!-- NAV -->
 <nav>
-  <div class="logo">GAN<span>DHI</span></div>
-  <a href="#" onclick="openModal()">S'inscrire</a>
+  <div class="logo">GANDHI<span>.</span></div>
+  <a href="#" onclick="openModal(); return false;" id="navBtn">S'inscrire</a>
 </nav>
 
-<!-- Hero -->
+<!-- HERO -->
 <section class="hero">
   <div class="hero-bg"></div>
   <div class="hero-pattern"></div>
   <div class="hero-content">
     <div class="badge">Covoiturage Interurbain · Sénégal</div>
-    <h1>Voyagez <span class="accent">ensemble,</span><br/>partout au <span class="accent2">Sénégal.</span></h1>
+    <h1>Voyagez <span class="accent">ensemble</span>,<br>partout au <span class="accent2">Sénégal</span>.</h1>
     <p class="hero-sub">Trouvez ou proposez un trajet entre particuliers. Prise en charge à domicile. Inscription gratuite, rapide et simple.</p>
     <div class="cta-group">
-      <a href="recherche.html" class="btn-primary">
-        <span>🔍</span> Trouver un trajet
-      </a>
-      <button class="btn-secondary" onclick="openModal('conducteur')">
-        <span class="icon-car">🚗</span> Proposer un trajet
-      </button>
+      <a href="recherche.html" class="btn-primary">🔍 Trouver un trajet</a>
+      <button class="btn-secondary" onclick="openModal()">🚗 Proposer un trajet</button>
     </div>
     <div class="stats">
-      <div class="stat">
-        <div class="stat-num">🎁</div>
-        <div class="stat-label">Annonces gratuites</div>
-      </div>
-      <div class="stat" style="border-left:1px solid rgba(255,255,255,0.1);padding-left:24px">
-        <div class="stat-num">0F</div>
-        <div class="stat-label">pour passagers</div>
-      </div>
-      <div class="stat" style="border-left:1px solid rgba(255,255,255,0.1);padding-left:24px">
-        <div class="stat-num">🏠</div>
-        <div class="stat-label">prise à domicile</div>
-      </div>
+      <div class="stat"><div class="stat-num" id="statTrajets">—</div><div class="stat-label">Trajets</div></div>
+      <div class="stat"><div class="stat-num" id="statConducteurs">—</div><div class="stat-label">Conducteurs</div></div>
+      <div class="stat"><div class="stat-num">0F</div><div class="stat-label">pour passagers</div></div>
     </div>
   </div>
 </section>
 
-<!-- Features -->
+<!-- FEATURES -->
 <section class="section">
-  <p class="badge" style="margin-bottom:12px">Pourquoi Gandhi ?</p>
-  <h2 class="section-title">Simple, Rapide,<br/>Accessible.</h2>
-  <p class="section-sub">Conçu pour le Sénégal, par des Sénégalais.</p>
+  <div class="section-title">Simple, Rapide, Accessible.</div>
+  <div class="section-sub">Conçu pour le Sénégal, par des Sénégalais.</div>
   <div class="features-grid">
-    <div class="feature-card">
-      <div class="feature-icon">🏠</div>
-      <h3>Prise à domicile</h3>
-      <p>Le conducteur vient vous chercher dans votre quartier.</p>
-    </div>
-    <div class="feature-card">
-      <div class="feature-icon">📱</div>
-      <h3>Inscription SMS</h3>
-      <p>Juste votre numéro, un code à 4 chiffres, c'est tout.</p>
-    </div>
-    <div class="feature-card">
-      <div class="feature-icon">🎁</div>
-      <h3>Lancement gratuit</h3>
-      <p>Publiez vos annonces gratuitement pendant toute la période de lancement.</p>
-    </div>
-    <div class="feature-card">
-      <div class="feature-icon">🔒</div>
-      <h3>Contact sécurisé</h3>
-      <p>Numéro du conducteur visible uniquement après connexion.</p>
-    </div>
-    <div class="feature-card">
-      <div class="feature-icon">⚡</div>
-      <h3>Publication rapide</h3>
-      <p>Annonce en ligne en moins de 3 minutes.</p>
-    </div>
-    <div class="feature-card">
-      <div class="feature-icon">🗺️</div>
-      <h3>Toutes les villes</h3>
-      <p>Dakar, Thiès, Saint-Louis, Ziguinchor et plus.</p>
-    </div>
+    <div class="feature-card"><div class="feature-icon">🏠</div><h3>Prise à domicile</h3><p>Le conducteur vient vous chercher dans votre quartier.</p></div>
+    <div class="feature-card"><div class="feature-icon">📱</div><h3>Inscription SMS</h3><p>Juste votre numéro, un code à 6 chiffres, c'est tout.</p></div>
+    <div class="feature-card"><div class="feature-icon">🎁</div><h3>Lancement gratuit</h3><p>Publiez vos annonces gratuitement pendant toute la période de lancement.</p></div>
+    <div class="feature-card"><div class="feature-icon">🔒</div><h3>Contact sécurisé</h3><p>Numéro du conducteur visible uniquement après connexion.</p></div>
+    <div class="feature-card"><div class="feature-icon">⚡</div><h3>Publication rapide</h3><p>Annonce en ligne en moins de 3 minutes.</p></div>
+    <div class="feature-card"><div class="feature-icon">🗺️</div><h3>Toutes les villes</h3><p>Dakar, Thiès, Saint-Louis, Ziguinchor et plus.</p></div>
   </div>
 </section>
 
-<!-- How it works -->
+<!-- HOW IT WORKS -->
 <section class="section how-bg">
-  <h2 class="section-title">Comment ça marche ?</h2>
-  <p class="section-sub">Deux rôles, une expérience fluide.</p>
+  <div class="section-title">Comment ça marche ?</div>
+  <div class="section-sub">Deux rôles, une expérience fluide.</div>
   <div class="tabs">
     <button class="tab active" onclick="switchTab('conducteur', this)">🚗 Conducteur</button>
     <button class="tab" onclick="switchTab('passager', this)">🧍 Passager</button>
   </div>
   <div class="steps active" id="steps-conducteur">
-    <div class="step">
-      <div class="step-num">1</div>
-      <div class="step-content">
-        <h4>Créez votre compte conducteur</h4>
-        <p>Numéro de téléphone + code SMS, puis uploadez votre CNI, permis et photo du véhicule.</p>
-      </div>
-    </div>
-    <div class="step">
-      <div class="step-num">2</div>
-      <div class="step-content">
-        <h4>Publiez votre annonce</h4>
-        <p>Renseignez le trajet, l'heure, le nombre de places, le prix et la marque du véhicule.</p>
-      </div>
-    </div>
-    <div class="step">
-      <div class="step-num">3</div>
-      <div class="step-content">
-        <h4>Publiez gratuitement 🎁</h4>
-        <p>Pendant la période de lancement, la publication est 100% gratuite. Votre annonce est immédiatement en ligne.</p>
-      </div>
-    </div>
-    <div class="step">
-      <div class="step-num">4</div>
-      <div class="step-content">
-        <h4>Recevez les passagers</h4>
-        <p>Les passagers vous contactent directement par téléphone ou WhatsApp.</p>
-      </div>
-    </div>
+    <div class="step"><div class="step-num">1</div><div class="step-text"><h4>Créez votre compte conducteur</h4><p>Numéro de téléphone + code SMS, puis uploadez votre CNI, permis et photo du véhicule.</p></div></div>
+    <div class="step"><div class="step-num">2</div><div class="step-text"><h4>Publiez votre annonce</h4><p>Renseignez le trajet, l'heure, le nombre de places, le prix et la marque du véhicule.</p></div></div>
+    <div class="step"><div class="step-num">3</div><div class="step-text"><h4>Publiez gratuitement 🎁</h4><p>Pendant la période de lancement, la publication est 100% gratuite.</p></div></div>
+    <div class="step"><div class="step-num">4</div><div class="step-text"><h4>Recevez les passagers</h4><p>Les passagers vous contactent directement par téléphone ou WhatsApp.</p></div></div>
   </div>
   <div class="steps" id="steps-passager">
-    <div class="step">
-      <div class="step-num">1</div>
-      <div class="step-content">
-        <h4>Inscrivez-vous gratuitement</h4>
-        <p>Juste votre numéro et un code SMS. Aucune pièce d'identité requise.</p>
-      </div>
-    </div>
-    <div class="step">
-      <div class="step-num">2</div>
-      <div class="step-content">
-        <h4>Recherchez un trajet</h4>
-        <p>Filtrez par ville de départ, ville d'arrivée, date et heure souhaitée.</p>
-      </div>
-    </div>
-    <div class="step">
-      <div class="step-num">3</div>
-      <div class="step-content">
-        <h4>Contactez le conducteur</h4>
-        <p>Appelez ou envoyez un WhatsApp directement depuis l'annonce.</p>
-      </div>
-    </div>
+    <div class="step"><div class="step-num">1</div><div class="step-text"><h4>Inscrivez-vous gratuitement</h4><p>Juste votre numéro et un code SMS. Aucune pièce d'identité requise.</p></div></div>
+    <div class="step"><div class="step-num">2</div><div class="step-text"><h4>Recherchez un trajet</h4><p>Filtrez par ville de départ, ville d'arrivée, date et heure souhaitée.</p></div></div>
+    <div class="step"><div class="step-num">3</div><div class="step-text"><h4>Contactez le conducteur</h4><p>Appelez ou envoyez un WhatsApp directement depuis l'annonce.</p></div></div>
   </div>
 </section>
 
-<!-- Pricing -->
+<!-- PRICING -->
 <section class="section">
-  <h2 class="section-title">Tarification</h2>
-  <p class="section-sub">Transparente et accessible.</p>
-  <div class="pricing-card">
-    <div>🚗 Conducteur</div>
-    <div class="price-big" style="color:var(--vert-light)">GRATUIT</div>
-    <div class="price-unit">pendant la période de lancement 🎁</div>
-    <div class="price-desc">Publiez autant d'annonces que vous voulez, sans frais. Le paiement sera activé prochainement.</div>
-  </div>
-  <div class="free-card">
-    <div>🧍 Passager</div>
-    <div class="free-label">GRATUIT</div>
-    <div style="font-size:0.85rem;color:var(--gris);margin-top:8px">Inscription, recherche et contact — 100% gratuit.</div>
+  <div class="section-title">Tarification</div>
+  <div class="section-sub">Transparente et accessible.</div>
+  <div class="pricing-grid">
+    <div class="price-card">
+      <h3>🚗 Conducteur</h3>
+      <div class="price-num">GRATUIT</div>
+      <div class="price-sub">pendant la période de lancement 🎁</div>
+      <p style="font-size:0.8rem;color:var(--gris);margin-top:12px">Publiez autant d'annonces que vous voulez.</p>
+    </div>
+    <div class="price-card">
+      <h3>🧍 Passager</h3>
+      <div class="price-num">GRATUIT</div>
+      <div class="price-sub">toujours gratuit</div>
+      <p style="font-size:0.8rem;color:var(--gris);margin-top:12px">Inscription, recherche et contact — 100% gratuit.</p>
+    </div>
   </div>
 </section>
 
-<!-- Footer -->
+<!-- FOOTER -->
 <footer>
-  <div class="footer-logo">GANDHI</div>
-  <p>Covoiturage interurbain entre particuliers au Sénégal</p>
-  <p style="margin-top:8px">© 2025 Gandhi · Tous droits réservés</p>
+  <div class="footer-logo">GANDHI.</div>
+  <div class="footer-sub">Covoiturage interurbain entre particuliers au Sénégal</div>
+  <div style="margin-top:12px;font-size:0.75rem;color:var(--gris)">© 2025 Gandhi · Tous droits réservés</div>
 </footer>
 
-<!-- Modal d'inscription -->
+<!-- reCAPTCHA invisible (requis par Firebase Phone Auth) -->
+<div id="recaptcha-container"></div>
+
+<!-- MODAL INSCRIPTION -->
 <div class="modal-overlay" id="modalOverlay" onclick="closeModalOutside(event)">
-  <div class="modal" id="modal" style="position:relative">
+  <div class="modal-sheet">
     <button class="modal-close" onclick="closeModal()">✕</button>
+
     <!-- Étape 0 : choix du rôle -->
     <div id="step0">
       <h2>Bienvenue sur Gandhi</h2>
       <p class="modal-sub">Choisissez votre rôle pour commencer.</p>
-      <div class="role-selector">
+      <div class="role-grid">
         <button class="role-btn conducteur" id="roleCondu" onclick="selectRole('conducteur')">
           <span class="role-icon">🚗</span>
           <span class="role-name">Conducteur</span>
@@ -548,10 +246,12 @@
       </div>
       <button class="btn-primary" style="width:100%" onclick="goToStep1()">Continuer →</button>
     </div>
+
     <!-- Étape 1 : infos personnelles -->
     <div id="step1" style="display:none">
       <div class="step-indicator">
-        <div class="step-dot done"></div><div class="step-dot active"></div>
+        <div class="step-dot done"></div>
+        <div class="step-dot active"></div>
         <div class="step-dot" id="dot2c"></div>
         <div class="step-dot" id="dot3c" style="display:none"></div>
       </div>
@@ -569,31 +269,43 @@
         <label>Numéro de téléphone *</label>
         <input type="tel" id="phoneInput" placeholder="+221 77 000 00 00" />
       </div>
-      <button class="btn-primary" style="width:100%;margin-top:8px" onclick="sendSMS()">Recevoir le code SMS →</button>
+      <button class="btn-primary" style="width:100%;margin-top:8px" id="sendSMSBtn" onclick="sendSMS()">Recevoir le code SMS →</button>
     </div>
+
     <!-- Étape 2 : OTP -->
     <div id="step2" style="display:none">
       <div class="step-indicator">
-        <div class="step-dot done"></div><div class="step-dot done"></div>
+        <div class="step-dot done"></div>
+        <div class="step-dot done"></div>
         <div class="step-dot active"></div>
         <div class="step-dot" id="dot3c2" style="display:none"></div>
       </div>
       <h2>Code de vérification</h2>
-      <p class="modal-sub">Entrez le code à 4 chiffres reçu par SMS.</p>
+      <p class="modal-sub">Entrez le code à 6 chiffres reçu par SMS.</p>
       <div class="otp-row">
         <input type="tel" class="otp-input" id="otp0" maxlength="1" oninput="otpNext(0)" />
         <input type="tel" class="otp-input" id="otp1" maxlength="1" oninput="otpNext(1)" />
         <input type="tel" class="otp-input" id="otp2" maxlength="1" oninput="otpNext(2)" />
         <input type="tel" class="otp-input" id="otp3" maxlength="1" oninput="otpNext(3)" />
+        <input type="tel" class="otp-input" id="otp4" maxlength="1" oninput="otpNext(4)" />
+        <input type="tel" class="otp-input" id="otp5" maxlength="1" oninput="otpNext(5)" />
       </div>
-      <button class="btn-primary" style="width:100%;margin-top:20px" onclick="verifyOTP()">Vérifier le code →</button>
-      <p style="text-align:center;margin-top:12px;font-size:0.8rem;color:var(--gris)">Code de démo : <strong style="color:var(--terre)">1234</strong></p>
+      <button class="btn-primary" style="width:100%;margin-top:20px" id="verifyBtn" onclick="verifyOTP()">Vérifier le code →</button>
+      <p style="text-align:center;margin-top:12px;font-size:0.8rem;color:var(--gris)">
+        Code reçu par SMS sur <strong style="color:var(--terre)" id="phoneDisplay"></strong>
+      </p>
+      <p style="text-align:center;margin-top:8px;font-size:0.78rem">
+        <a href="#" onclick="resendCode(); return false;" style="color:var(--vert-light)">Renvoyer le code</a>
+      </p>
     </div>
+
     <!-- Étape 3 : documents (conducteur seulement) -->
     <div id="step3" style="display:none">
       <div class="step-indicator">
-        <div class="step-dot done"></div><div class="step-dot done"></div>
-        <div class="step-dot done"></div><div class="step-dot active"></div>
+        <div class="step-dot done"></div>
+        <div class="step-dot done"></div>
+        <div class="step-dot done"></div>
+        <div class="step-dot active"></div>
       </div>
       <h2>Documents requis</h2>
       <p class="modal-sub">Uploadez vos pièces pour activer votre compte conducteur.</p>
@@ -624,17 +336,17 @@
           <p>Photo de votre voiture</p>
         </div>
       </div>
-      <button class="btn-primary" style="width:100%;margin-top:8px" onclick="finishSignup()">Accéder au tableau de bord →</button>
+      <button class="btn-primary" style="width:100%;margin-top:8px" id="finishBtn" onclick="finishSignup()">Accéder au tableau de bord →</button>
     </div>
   </div>
 </div>
 
-<!-- ── FIREBASE SDK ── -->
+<!-- Firebase SDK -->
 <script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-  import { getAuth, signInWithPhoneNumber, RecaptchaVerifier } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
-  import { getFirestore, collection, addDoc, query, where, getDocs, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
-  import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-storage.js";
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { getAuth, RecaptchaVerifier, signInWithPhoneNumber, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  import { getFirestore, doc, setDoc, getDoc, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+  import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyCEQCpB69WR4qRAbQ9qfIcCsPRm9-l_Lw8",
@@ -650,105 +362,210 @@
   const db = getFirestore(app);
   const storage = getStorage(app);
 
-  // Rendre disponible globalement pour les scripts inline
-  window.db = db;
-  window.auth = auth;
-  window.storage = storage;
-  window.signInWithPhoneNumber = signInWithPhoneNumber;
-  window.RecaptchaVerifier = RecaptchaVerifier;
-  window.collection = collection;
-  window.addDoc = addDoc;
-  window.setDoc = setDoc;
-  window.doc = doc;
-  window.getDoc = getDoc;
-  window.getDocs = getDocs;
-  window.query = query;
-  window.where = where;
-  window.ref = ref;
-  window.uploadBytes = uploadBytes;
-  window.getDownloadURL = getDownloadURL;
-</script>
-
-<script>
+  let confirmationResult = null;
   let currentRole = '';
-  let currentStep = 0;
-  let uploads = { cniZone: false, permisZone: false, vehicleZone: false };
+  let uploads = { cniZone: null, permisZone: null, vehicleZone: null };
 
-  function openModal(role) {
-    document.getElementById('modalOverlay').classList.add('open');
-    if (role) { selectRole(role); }
+  // Mettre à jour la nav si déjà connecté
+  onAuthStateChanged(auth, async (user) => {
+    if (user) {
+      const navBtn = document.getElementById('navBtn');
+      const userDoc = await getDoc(doc(db, 'users', user.uid));
+      if (userDoc.exists()) {
+        const data = userDoc.data();
+        navBtn.textContent = data.prenom || 'Mon compte';
+        navBtn.href = data.role === 'conducteur' ? 'dashboard.html' : 'recherche.html';
+      }
+    }
+  });
+
+  // Charger les stats depuis Firestore
+  async function loadStats() {
+    try {
+      const trajetsSnap = await getDocs(collection(db, 'annonces'));
+      const usersSnap = await getDocs(collection(db, 'users'));
+      const conducteurs = usersSnap.docs.filter(d => d.data().role === 'conducteur').length;
+      document.getElementById('statTrajets').textContent = trajetsSnap.size;
+      document.getElementById('statConducteurs').textContent = conducteurs;
+    } catch(e) {
+      document.getElementById('statTrajets').textContent = '0';
+      document.getElementById('statConducteurs').textContent = '0';
+    }
   }
-  function closeModal() { document.getElementById('modalOverlay').classList.remove('open'); }
-  function closeModalOutside(e) { if (e.target === document.getElementById('modalOverlay')) closeModal(); }
+  loadStats();
 
-  function selectRole(role) {
+  // Exposer les fonctions globalement
+  window.openModal = function(role) {
+    document.getElementById('modalOverlay').classList.add('open');
+    if (role) selectRole(role);
+  };
+  window.closeModal = function() { document.getElementById('modalOverlay').classList.remove('open'); };
+  window.closeModalOutside = function(e) { if (e.target === document.getElementById('modalOverlay')) window.closeModal(); };
+
+  window.selectRole = function(role) {
     currentRole = role;
     document.getElementById('roleCondu').classList.toggle('selected', role === 'conducteur');
     document.getElementById('rolePass').classList.toggle('selected', role === 'passager');
-  }
+  };
 
-  function goToStep1() {
+  window.goToStep1 = function() {
     if (!currentRole) { notify('Choisissez un rôle', 'error'); return; }
     show('step0', false); show('step1', true);
     if (currentRole === 'conducteur') {
       document.getElementById('dot2c').style.display = '';
       document.getElementById('dot3c').style.display = '';
     }
-  }
+    // Initialiser reCAPTCHA
+    if (!window.recaptchaVerifier) {
+      window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', { size: 'invisible' });
+    }
+  };
 
-  function sendSMS() {
+  window.sendSMS = async function() {
     const prenom = document.getElementById('prenomInput').value.trim();
     const nom = document.getElementById('nomInput').value.trim();
     const phone = document.getElementById('phoneInput').value.trim();
     if (!prenom) { notify('Entrez votre prénom', 'error'); return; }
     if (!nom) { notify('Entrez votre nom', 'error'); return; }
     if (!phone) { notify('Entrez votre numéro de téléphone', 'error'); return; }
-    show('step1', false); show('step2', true);
-    if (currentRole === 'conducteur') {
-      document.getElementById('dot3c2').style.display = '';
-    }
-    notify('Code SMS envoyé ! (démo : 1234)');
-  }
 
-  function otpNext(i) {
+    const btn = document.getElementById('sendSMSBtn');
+    btn.innerHTML = '<span class="spinner"></span> Envoi en cours…';
+    btn.classList.add('btn-loading');
+
+    try {
+      confirmationResult = await signInWithPhoneNumber(auth, phone, window.recaptchaVerifier);
+      document.getElementById('phoneDisplay').textContent = phone;
+      show('step1', false); show('step2', true);
+      if (currentRole === 'conducteur') document.getElementById('dot3c2').style.display = '';
+      notify('✅ Code SMS envoyé !');
+    } catch(err) {
+      console.error(err);
+      notify('Erreur : ' + (err.message || 'Numéro invalide'), 'error');
+      // Reset reCAPTCHA
+      window.recaptchaVerifier.clear();
+      window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', { size: 'invisible' });
+    } finally {
+      btn.innerHTML = 'Recevoir le code SMS →';
+      btn.classList.remove('btn-loading');
+    }
+  };
+
+  window.otpNext = function(i) {
     const el = document.getElementById('otp' + i);
-    // Keep only last character typed
     if (el.value.length > 1) el.value = el.value.slice(-1);
-    if (el.value.length === 1 && i < 3) {
-      document.getElementById('otp' + (i + 1)).focus();
-    }
-  }
+    if (el.value.length === 1 && i < 5) document.getElementById('otp' + (i + 1)).focus();
+  };
 
-  function verifyOTP() {
-    const code = ['otp0','otp1','otp2','otp3'].map(id => document.getElementById(id).value).join('');
-    if (code.length < 4) { notify('Entrez les 4 chiffres du code', 'error'); return; }
-    if (code !== '1234') { notify('Code incorrect. Démo : 1234', 'error'); return; }
-    if (currentRole === 'conducteur') {
-      show('step2', false); show('step3', true);
-    } else {
-      closeModal();
-      notify('Compte passager créé ! Bienvenue 🎉');
-      setTimeout(() => window.location.href = 'recherche.html', 1500);
-    }
-  }
+  window.verifyOTP = async function() {
+    const code = [0,1,2,3,4,5].map(i => document.getElementById('otp'+i).value).join('');
+    if (code.length < 6) { notify('Entrez les 6 chiffres du code', 'error'); return; }
+    if (!confirmationResult) { notify('Relancez l\'envoi du SMS', 'error'); return; }
 
-  function fileUploaded(zoneId, input) {
+    const btn = document.getElementById('verifyBtn');
+    btn.innerHTML = '<span class="spinner"></span> Vérification…';
+    btn.classList.add('btn-loading');
+
+    try {
+      const result = await confirmationResult.confirm(code);
+      const user = result.user;
+      const prenom = document.getElementById('prenomInput').value.trim();
+      const nom = document.getElementById('nomInput').value.trim();
+      const phone = document.getElementById('phoneInput').value.trim();
+
+      // Sauvegarder l'utilisateur dans Firestore
+      await setDoc(doc(db, 'users', user.uid), {
+        uid: user.uid,
+        prenom, nom, phone,
+        role: currentRole,
+        createdAt: new Date().toISOString(),
+        verified: currentRole === 'passager' // conducteur pas encore vérifié
+      });
+
+      if (currentRole === 'conducteur') {
+        show('step2', false); show('step3', true);
+        notify('✅ Code vérifié ! Uploadez vos documents.');
+      } else {
+        window.closeModal();
+        notify('🎉 Compte passager créé ! Bienvenue ' + prenom + ' !');
+        setTimeout(() => window.location.href = 'recherche.html', 1800);
+      }
+    } catch(err) {
+      console.error(err);
+      notify('Code incorrect ou expiré.', 'error');
+    } finally {
+      btn.innerHTML = 'Vérifier le code →';
+      btn.classList.remove('btn-loading');
+    }
+  };
+
+  window.resendCode = async function() {
+    const phone = document.getElementById('phoneInput').value.trim();
+    if (!phone) return;
+    try {
+      if (!window.recaptchaVerifier) {
+        window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', { size: 'invisible' });
+      }
+      confirmationResult = await signInWithPhoneNumber(auth, phone, window.recaptchaVerifier);
+      notify('✅ Nouveau code envoyé !');
+    } catch(err) {
+      notify('Erreur lors du renvoi', 'error');
+    }
+  };
+
+  window.fileUploaded = function(zoneId, input) {
     if (!input.files[0]) return;
-    uploads[zoneId] = true;
+    uploads[zoneId] = input.files[0];
     const zone = document.getElementById(zoneId);
     const name = input.files[0].name;
     zone.style.borderColor = 'var(--vert-light)';
     zone.innerHTML = `<div style="color:var(--vert-light);font-size:1.5rem">✅</div><strong style="color:var(--vert-light)">${name}</strong>`;
-  }
+  };
 
-  function finishSignup() {
+  window.finishSignup = async function() {
     if (!uploads.cniZone) { notify('Veuillez uploader votre CNI', 'error'); return; }
-    if (!uploads.permisZone) { notify('Veuillez uploader votre permis de conduire', 'error'); return; }
+    if (!uploads.permisZone) { notify('Veuillez uploader votre permis', 'error'); return; }
     if (!uploads.vehicleZone) { notify('Veuillez uploader la photo du véhicule', 'error'); return; }
-    closeModal();
-    notify('Compte conducteur créé ! Bienvenue 🎉');
-    setTimeout(() => window.location.href = 'dashboard.html', 1500);
-  }
+
+    const btn = document.getElementById('finishBtn');
+    btn.innerHTML = '<span class="spinner"></span> Upload en cours…';
+    btn.classList.add('btn-loading');
+
+    try {
+      const user = auth.currentUser;
+      const uid = user.uid;
+
+      // Upload vers Firebase Storage
+      const uploadFile = async (file, path) => {
+        const storageRef = ref(storage, path);
+        await uploadBytes(storageRef, file);
+        return await getDownloadURL(storageRef);
+      };
+
+      const [cniUrl, permisUrl, vehicleUrl] = await Promise.all([
+        uploadFile(uploads.cniZone, `docs/${uid}/cni`),
+        uploadFile(uploads.permisZone, `docs/${uid}/permis`),
+        uploadFile(uploads.vehicleZone, `docs/${uid}/vehicule`)
+      ]);
+
+      // Mettre à jour le profil dans Firestore
+      await setDoc(doc(db, 'users', uid), {
+        cniUrl, permisUrl, vehicleUrl,
+        documentsUploaded: true,
+        updatedAt: new Date().toISOString()
+      }, { merge: true });
+
+      window.closeModal();
+      notify('🎉 Compte conducteur créé ! Bienvenue !');
+      setTimeout(() => window.location.href = 'dashboard.html', 1800);
+    } catch(err) {
+      console.error(err);
+      notify('Erreur lors de l\'upload : ' + err.message, 'error');
+    } finally {
+      btn.innerHTML = 'Accéder au tableau de bord →';
+      btn.classList.remove('btn-loading');
+    }
+  };
 
   function show(id, visible) {
     document.getElementById(id).style.display = visible ? 'block' : 'none';
@@ -762,12 +579,12 @@
     setTimeout(() => bar.classList.remove('show'), 3500);
   }
 
-  function switchTab(tab, btn) {
+  window.switchTab = function(tab, btn) {
     document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
     btn.classList.add('active');
     document.getElementById('steps-conducteur').classList.toggle('active', tab === 'conducteur');
     document.getElementById('steps-passager').classList.toggle('active', tab === 'passager');
-  }
+  };
 </script>
 </body>
 </html>
