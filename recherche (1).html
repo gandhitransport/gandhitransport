@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Rechercher un trajet — GANDHI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --sable: #F5E6C8; --terre: #C4783A; --nuit: #0D1117;
+      --savane: #1A1208; --vert: #2D6A4F; --vert-light: #52B788;
+      --blanc: #FEFAF3; --gris: #8A7B6E; --radius: 16px; --terre2: #E08840;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'DM Sans', sans-serif; font-size: 16px; background: var(--nuit); color: var(--blanc); min-height: 100vh; }
+    @media (max-width: 600px) {
+      body { font-size: 14px; }
+      h1 { font-size: 1.3rem !important; }
+      button { font-size: 1rem; }
+      input, select, textarea { font-size: 16px !important; }
+    }
+
+    /* NAV */
+    nav {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 15px 20px;
+      background: rgba(13,17,23,0.97); backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(196,120,58,0.12);
+      position: sticky; top: 0; z-index: 50;
+    }
+    .logo { font-family: 'Syne', sans-serif; font-size: 1.4rem; font-weight: 800; color: var(--terre); text-decoration: none; letter-spacing: -0.5px; }
+    .logo span { color: var(--vert-light); }
+    .back-btn {
+      color: var(--gris); font-size: 0.85rem; text-decoration: none;
+      display: flex; align-items: center; gap: 6px;
+      padding: 7px 14px; border-radius: 40px;
+      border: 1px solid rgba(255,255,255,0.08);
+      transition: all .2s;
+    }
+    .back-btn:hover { color: var(--blanc); border-color: rgba(255,255,255,0.15); }
+
+    /* SEARCH PANEL */
+    .search-panel {
+      background: linear-gradient(180deg, rgba(196,120,58,0.07) 0%, transparent 100%);
+      padding: 24px 20px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .search-panel h1 { font-family: 'Syne', sans-serif; font-size: 1.4rem; font-weight: 800; margin-bottom: 18px; letter-spacing: -0.5px; }
+    .search-grid { display: flex; flex-direction: column; gap: 10px; }
+    .search-row { display: flex; gap: 10px; flex-wrap: wrap; }
+    .search-field {
+      flex: 1; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 12px; padding: 12px 14px; color: var(--blanc);
+      font-family: 'DM Sans', sans-serif; font-size: 0.9rem;
+      outline: none; transition: border-color .2s, background .2s; appearance: none; width: 100%;
+    }
+    .search-field:focus { border-color: var(--terre); background: rgba(196,120,58,0.04); }
+    .search-field option { background: var(--savane); }
+    .filter-group { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+    .filter-group .search-field { flex: 1; min-width: 100px; }
+    .checkbox-label {
+      display: flex; align-items: center; gap: 6px;
+      background: rgba(255,255,255,0.04); padding: 0 12px; border-radius: 12px;
+      height: 46px; cursor: pointer; font-size: 0.85rem; white-space: nowrap;
+      border: 1px solid rgba(255,255,255,0.08); transition: all .2s;
+    }
+    .checkbox-label:hover { border-color: var(--terre); }
+
+    .btn-search {
+      width: 100%; padding: 14px; border-radius: 12px;
+      background: linear-gradient(135deg, var(--terre), var(--terre2));
+      color: #fff; border: none; cursor: pointer;
+      font-family: 'Syne', sans-serif; font-size: 1rem; font-weight: 700;
+      transition: opacity .2s; margin-top: 4px;
+      box-shadow: 0 4px 20px rgba(196,120,58,0.35);
+    }
+    .btn-search:hover { opacity: 0.9; }
+
+    /* RESULTS */
+    .results-header { padding: 16px 20px 8px; display: flex; align-items: center; justify-content: space-between; }
+    .results-count { font-size: 0.84rem; color: var(--gris); }
+    .results-count strong { color: var(--blanc); }
+    .sort-btn { font-size: 0.8rem; color: var(--terre); background: none; border: 1px solid rgba(196,120,58,0.25); border-radius: 8px; cursor: pointer; font-family: 'DM Sans', sans-serif; padding: 5px 10px; transition: all .2s; }
+    .sort-btn:hover { background: rgba(196,120,58,0.1); }
+
+    /* ANNONCE CARDS */
+    .annonces-list { padding: 4px 16px 100px; display: flex; flex-direction: column; gap: 14px; }
+    .annonce-card {
+      background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07);
+      border-radius: var(--radius); padding: 18px 16px;
+      transition: border-color .2s, transform .15s, background .2s;
+      cursor: pointer; animation: fadeIn .4s ease both;
+    }
+    .annonce-card:hover { border-color: rgba(196,120,58,0.35); transform: translateY(-2px); background: rgba(196,120,58,0.03); }
+    @keyframes fadeIn { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:none; } }
+
+    .card-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 14px; }
+    .trajet-villes { font-family: 'Syne', sans-serif; font-size: 1.05rem; font-weight: 800; letter-spacing: -0.5px; }
+    .trajet-arrow { color: var(--terre); margin: 0 5px; }
+    .trajet-meta { font-size: 0.78rem; color: var(--gris); margin-top: 4px; }
+    .prix-badge {
+      background: rgba(196,120,58,0.12); border: 1px solid rgba(196,120,58,0.3);
+      color: var(--terre); padding: 7px 13px; border-radius: 8px;
+      font-family: 'Syne', sans-serif; font-size: 0.9rem; font-weight: 800; white-space: nowrap;
+    }
+
+    .card-details { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
+    .detail-chip { display: flex; align-items: center; gap: 5px; background: rgba(255,255,255,0.05); border-radius: 8px; padding: 5px 10px; font-size: 0.75rem; color: var(--sable); }
+    .chip-green { background: rgba(82,183,136,0.1); color: var(--vert-light); }
+
+    .card-footer { display: flex; justify-content: space-between; align-items: center; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.06); }
+    .conducteur-info { display: flex; align-items: center; gap: 10px; }
+    .avatar {
+      width: 34px; height: 34px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--terre), var(--terre2));
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Syne', sans-serif; font-weight: 800; font-size: 0.85rem;
+    }
+    .conducteur-name { font-size: 0.85rem; font-weight: 500; }
+    .conducteur-meta { font-size: 0.7rem; color: var(--gris); }
+    .btn-contact {
+      background: var(--vert-light); color: var(--nuit);
+      padding: 9px 18px; border-radius: 10px; border: none;
+      cursor: pointer; font-family: 'Syne', sans-serif;
+      font-size: 0.82rem; font-weight: 700; transition: opacity .2s, transform .2s;
+    }
+    .btn-contact:hover { opacity: 0.88; transform: translateY(-1px); }
+
+    .empty-state { text-align: center; padding: 60px 24px; display: none; }
+    .empty-state .e-icon { font-size: 3rem; margin-bottom: 12px; }
+    .empty-state h3 { font-family: 'Syne', sans-serif; font-size: 1.2rem; margin-bottom: 6px; }
+    .empty-state p { font-size: 0.85rem; color: var(--gris); }
+
+    .loading-state { text-align: center; padding: 60px 24px; }
+    .loading-state .spinner { display: inline-block; width: 32px; height: 32px; border: 3px solid rgba(196,120,58,0.15); border-top-color: var(--terre); border-radius: 50%; animation: spin .8s linear infinite; margin-bottom: 16px; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* CONTACT MODAL */
+    .contact-modal {
+      position: fixed; inset: 0; z-index: 200;
+      background: rgba(0,0,0,0.8); backdrop-filter: blur(8px);
+      display: none; align-items: flex-end; justify-content: center;
+    }
+    .contact-modal.open { display: flex; }
+    .contact-sheet {
+      background: var(--savane); border-radius: 24px 24px 0 0;
+      width: 100%; max-width: 480px; padding: 32px 24px 44px;
+      border-top: 3px solid var(--vert-light);
+      animation: slideUp .3s cubic-bezier(.34,1.2,.64,1);
+    }
+    @keyframes slideUp { from { transform:translateY(100%); } to { transform:none; } }
+    .contact-sheet h3 { font-family: 'Syne', sans-serif; font-size: 1.3rem; font-weight: 800; margin-bottom: 6px; }
+    .contact-sheet p { font-size: 0.84rem; color: var(--gris); margin-bottom: 24px; }
+
+    .phone-display {
+      background: rgba(82,183,136,0.08); border: 1px solid rgba(82,183,136,0.25);
+      border-radius: 14px; padding: 18px 20px; text-align: center; margin-bottom: 16px;
+    }
+    .phone-num { font-family: 'Syne', sans-serif; font-size: 1.6rem; font-weight: 800; color: var(--vert-light); letter-spacing: 1px; }
+
+    .contact-actions { display: flex; gap: 10px; }
+    .btn-call { flex: 1; padding: 14px; background: var(--vert-light); color: var(--nuit); border: none; border-radius: 12px; font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1rem; cursor: pointer; transition: opacity .2s; }
+    .btn-call:hover { opacity: 0.88; }
+    .btn-whatsapp { flex: 1; padding: 14px; background: #25D366; color: #fff; border: none; border-radius: 12px; font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1rem; cursor: pointer; transition: opacity .2s; }
+    .btn-whatsapp:hover { opacity: 0.88; }
+    .btn-cancel {
+      width: 100%; margin-top: 12px; padding: 12px;
+      background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.09);
+      border-radius: 12px; color: var(--gris); cursor: pointer;
+      font-family: 'DM Sans', sans-serif; transition: background .2s;
+    }
+    .btn-cancel:hover { background: rgba(255,255,255,0.1); }
+
+    .login-gate {
+      background: rgba(196,120,58,0.07); border: 1px solid rgba(196,120,58,0.18);
+      border-radius: 14px; padding: 20px; text-align: center; margin-bottom: 16px;
+    }
+    .login-gate p { color: var(--sable); margin-bottom: 12px; font-size: 0.9rem; }
+    .login-gate a {
+      display: inline-block; background: linear-gradient(135deg, var(--terre), var(--terre2));
+      color: #fff; padding: 10px 24px; border-radius: 10px;
+      text-decoration: none; font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.9rem;
+    }
+
+    /* FOOTER */
+    footer {
+      padding: 44px 24px 36px; text-align: center;
+      border-top: 1px solid rgba(255,255,255,0.06); margin-top: 40px;
+      background: linear-gradient(0deg, rgba(196,120,58,0.04) 0%, transparent 100%);
+    }
+    .footer-logo { font-family: 'Syne', sans-serif; font-size: 1.4rem; font-weight: 800; color: var(--terre); margin-bottom: 4px; letter-spacing: -0.5px; }
+    .footer-sub { font-size: 0.82rem; color: var(--gris); margin-bottom: 28px; }
+    .footer-divider { width: 40px; height: 2px; background: var(--terre); border-radius: 2px; margin: 0 auto 24px; opacity: 0.4; }
+    .footer-contact { display: flex; flex-direction: column; gap: 12px; align-items: center; margin-bottom: 24px; }
+    .footer-contact-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.86rem; color: var(--terre); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
+    .footer-link { display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; border-radius: 40px; text-decoration: none; font-size: 0.9rem; font-weight: 500; transition: all .2s; }
+    .footer-link-email { color: var(--sable); background: rgba(245,230,200,0.07); border: 1px solid rgba(245,230,200,0.12); }
+    .footer-link-email:hover { background: rgba(245,230,200,0.13); }
+    .footer-link-wa { color: #fff; background: #128C7E; border: 1px solid rgba(18,140,126,0.4); }
+    .footer-link-wa:hover { background: #075E54; }
+    .footer-copy { font-size: 0.74rem; color: var(--gris); }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="logo">GANDHI<span>.</span></a>
+  <a href="index.html" class="back-btn">← Accueil</a>
+</nav>
+
+<div class="search-panel">
+  <h1>🔍 Trouver un trajet</h1>
+  <div class="search-grid">
+    <div class="search-row">
+      <select class="search-field" id="villeDepart">
+        <option value="">🏙️ Ville départ</option>
+        <option>Dakar</option><option>Thiès</option><option>Saint-Louis</option>
+        <option>Ziguinchor</option><option>Touba</option><option>Kaolack</option>
+        <option>Mbour</option><option>Diourbel</option><option>Louga</option>
+        <option>Tambacounda</option><option>Kolda</option><option>Fatick</option>
+      </select>
+      <select class="search-field" id="villeArrivee">
+        <option value="">🏙️ Ville arrivée</option>
+        <option>Dakar</option><option>Thiès</option><option>Saint-Louis</option>
+        <option>Ziguinchor</option><option>Touba</option><option>Kaolack</option>
+        <option>Mbour</option><option>Diourbel</option><option>Louga</option>
+        <option>Tambacounda</option><option>Kolda</option><option>Fatick</option>
+      </select>
+    </div>
+    <div class="search-row">
+      <input type="date" class="search-field" id="dateVoyage" />
+      <input type="time" class="search-field" id="heureVoyage" placeholder="Heure min" />
+    </div>
+    <div class="filter-group">
+      <input type="number" class="search-field" id="prixMin" placeholder="Prix min" />
+      <input type="number" class="search-field" id="prixMax" placeholder="Prix max" />
+      <label class="checkbox-label">
+        <input type="checkbox" id="domicileFilter" /> 🏠 Domicile
+      </label>
+    </div>
+    <button class="btn-search" onclick="searchAnnonces()">Rechercher les trajets</button>
+  </div>
+</div>
+
+<div class="results-header">
+  <span class="results-count"><strong id="resultCount">…</strong> trajets disponibles</span>
+  <button class="sort-btn" onclick="toggleSort()">↕ Prix</button>
+</div>
+
+<div class="loading-state" id="loadingState">
+  <div class="spinner"></div>
+  <p style="color:var(--gris);font-size:0.9rem">Chargement des trajets…</p>
+</div>
+
+<div class="annonces-list" id="annoncesList"></div>
+<div class="empty-state" id="emptyState">
+  <div class="e-icon">🚗</div>
+  <h3>Aucun trajet trouvé</h3>
+  <p>Essayez d'autres critères ou une date différente.</p>
+</div>
+
+<div class="contact-modal" id="contactModal" onclick="closeContactOutside(event)">
+  <div class="contact-sheet">
+    <h3>Contacter le conducteur</h3>
+    <p id="contactDesc">Trajet · Conducteur</p>
+    <div class="login-gate" id="loginGate" style="display:none">
+      <p>🔒 Connectez-vous pour voir le numéro du conducteur</p>
+      <a href="index.html">Se connecter</a>
+    </div>
+    <div id="phoneSection" style="display:none">
+      <div class="phone-display">
+        <div style="font-size:0.76rem;color:var(--gris);margin-bottom:4px">Numéro du conducteur</div>
+        <div class="phone-num" id="conducteurPhone">+221 77 000 00 00</div>
+      </div>
+      <div class="contact-actions">
+        <button class="btn-call" onclick="callConducteur()">📞 Appeler</button>
+        <button class="btn-whatsapp" onclick="whatsappConducteur()">💬 WhatsApp</button>
+      </div>
+    </div>
+    <button class="btn-cancel" onclick="closeContact()">Fermer</button>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-logo">GANDHI.</div>
+  <div class="footer-sub">Covoiturage interurbain entre particuliers au Sénégal</div>
+  <div class="footer-divider"></div>
+  <div class="footer-contact">
+    <div class="footer-contact-title">Nous contacter</div>
+    <a href="mailto:gandhitransport221@gmail.com" class="footer-link footer-link-email">
+      📧 gandhitransport221@gmail.com
+    </a>
+    <a href="https://wa.me/221761707776" target="_blank" class="footer-link footer-link-wa">
+      💬 WhatsApp : <strong>76 170 77 76</strong>
+    </a>
+  </div>
+  <div class="footer-copy">© 2025 Gandhi · Tous droits réservés</div>
+</footer>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  import { getFirestore, collection, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyCEQCpB69WR4qRAbQ9qfIcCsPRm9-l_Lw8",
+    authDomain: "gandhi-aa31c.firebaseapp.com",
+    projectId: "gandhi-aa31c",
+    storageBucket: "gandhi-aa31c.firebasestorage.app",
+    messagingSenderId: "529079046689",
+    appId: "1:529079046689:web:f939f9ebf4ad1f0cad4960"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  let allAnnonces = [];
+  let filtered = [];
+  let currentContact = null;
+  let isLoggedIn = false;
+  let sortAsc = true;
+
+  onAuthStateChanged(auth, (user) => { isLoggedIn = !!user; });
+
+  async function loadAnnonces() {
+    document.getElementById('loadingState').style.display = 'block';
+    document.getElementById('annoncesList').innerHTML = '';
+    document.getElementById('emptyState').style.display = 'none';
+    try {
+      const today = new Date().toISOString().split('T')[0];
+      const snap = await getDocs(query(collection(db, 'annonces'), orderBy('createdAt', 'desc')));
+      allAnnonces = snap.docs.map(d => ({ id: d.id, ...d.data() })).filter(a => a.date >= today);
+      filtered = [...allAnnonces];
+    } catch(err) {
+      console.error(err);
+      allAnnonces = []; filtered = [];
+    }
+    document.getElementById('loadingState').style.display = 'none';
+    renderAnnonces(filtered);
+  }
+
+  function renderAnnonces(list) {
+    const container = document.getElementById('annoncesList');
+    const empty = document.getElementById('emptyState');
+    document.getElementById('resultCount').textContent = list.length;
+    if (list.length === 0) { container.innerHTML = ''; empty.style.display = 'block'; return; }
+    empty.style.display = 'none';
+    container.innerHTML = list.map((a, i) => `
+      <div class="annonce-card" style="animation-delay:${i*0.07}s" onclick="openContact('${a.id}')">
+        <div class="card-top">
+          <div class="trajet-info">
+            <div class="trajet-villes">${a.dep}<span class="trajet-arrow">→</span>${a.arr}</div>
+            <div class="trajet-meta">${a.qDep || ''} ${a.qArr ? '→ '+a.qArr : ''} · ${formatDate(a.date)} à ${a.heure}</div>
+          </div>
+          <div class="prix-badge">${Number(a.prix).toLocaleString('fr')} F</div>
+        </div>
+        <div class="card-details">
+          <div class="detail-chip">💺 ${a.places} place${a.places>1?'s':''}</div>
+          <div class="detail-chip">🚗 ${a.marque}</div>
+          ${a.domicile ? '<div class="detail-chip chip-green">🏠 Prise à domicile</div>' : '<div class="detail-chip">📍 Point fixe</div>'}
+        </div>
+        <div class="card-footer">
+          <div class="conducteur-info">
+            <div class="avatar">${a.avatar || '?'}</div>
+            <div>
+              <div class="conducteur-name">${a.conducteur || 'Conducteur'}</div>
+              <div class="conducteur-meta">✓ Conducteur vérifié</div>
+            </div>
+          </div>
+          <button class="btn-contact" onclick="openContact('${a.id}'); event.stopPropagation()">Contacter</button>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function formatDate(d) {
+    if (!d) return '';
+    const [y,m,j] = d.split('-');
+    const mois = ['Jan','Fév','Mar','Avr','Mai','Jun','Jul','Aoû','Sep','Oct','Nov','Déc'];
+    return `${j} ${mois[parseInt(m)-1]}`;
+  }
+
+  window.searchAnnonces = function() {
+    const dep = document.getElementById('villeDepart').value;
+    const arr = document.getElementById('villeArrivee').value;
+    const date = document.getElementById('dateVoyage').value;
+    const heureMin = document.getElementById('heureVoyage').value;
+    const prixMin = parseInt(document.getElementById('prixMin').value) || 0;
+    const prixMax = parseInt(document.getElementById('prixMax').value) || Infinity;
+    const domicileOnly = document.getElementById('domicileFilter').checked;
+
+    filtered = allAnnonces.filter(a => {
+      if (dep && a.dep !== dep) return false;
+      if (arr && a.arr !== arr) return false;
+      if (date && a.date !== date) return false;
+      if (heureMin && a.heure < heureMin) return false;
+      if (a.prix < prixMin || a.prix > prixMax) return false;
+      if (domicileOnly && !a.domicile) return false;
+      return true;
+    });
+    if (sortAsc) filtered.sort((a,b) => a.prix - b.prix);
+    else filtered.sort((a,b) => b.prix - a.prix);
+    renderAnnonces(filtered);
+  };
+
+  window.toggleSort = function() {
+    sortAsc = !sortAsc;
+    filtered.sort((a,b) => sortAsc ? a.prix - b.prix : b.prix - a.prix);
+    renderAnnonces(filtered);
+  };
+
+  window.openContact = function(id) {
+    currentContact = allAnnonces.find(a => a.id === id);
+    if (!currentContact) return;
+    document.getElementById('contactDesc').textContent = `${currentContact.dep} → ${currentContact.arr} · ${currentContact.conducteur}`;
+    if (!isLoggedIn) {
+      document.getElementById('loginGate').style.display = 'block';
+      document.getElementById('phoneSection').style.display = 'none';
+    } else {
+      document.getElementById('loginGate').style.display = 'none';
+      document.getElementById('phoneSection').style.display = 'block';
+      document.getElementById('conducteurPhone').textContent = currentContact.phone || 'Non disponible';
+    }
+    document.getElementById('contactModal').classList.add('open');
+  };
+
+  window.closeContact = function() { document.getElementById('contactModal').classList.remove('open'); };
+  window.closeContactOutside = function(e) { if (e.target.id === 'contactModal') window.closeContact(); };
+  window.callConducteur = function() { if (currentContact?.phone) window.location.href = `tel:${currentContact.phone}`; };
+  window.whatsappConducteur = function() {
+    if (currentContact?.phone) {
+      const num = currentContact.phone.replace(/\s+/g,'').replace('+','');
+      window.open(`https://wa.me/${num}`, '_blank');
+    }
+  };
+
+  document.getElementById('dateVoyage').value = new Date().toISOString().split('T')[0];
+  loadAnnonces();
+</script>
+</body>
+</html>

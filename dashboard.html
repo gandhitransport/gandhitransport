@@ -9,9 +9,9 @@
   <style>
     :root {
       --sable: #F5E6C8; --terre: #C4783A; --nuit: #0D1117;
-      --savane: #2A1F14; --vert: #2D6A4F; --vert-light: #52B788;
+      --savane: #1A1208; --vert: #2D6A4F; --vert-light: #52B788;
       --blanc: #FEFAF3; --gris: #8A7B6E; --radius: 16px;
-      --card: rgba(255,255,255,0.04);
+      --card: rgba(255,255,255,0.04); --terre2: #E08840;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: 'DM Sans', sans-serif; font-size: 16px; background: var(--nuit); color: var(--blanc); min-height: 100vh; padding-bottom: 100px; }
@@ -22,90 +22,231 @@
       button { font-size: 1rem; }
       input, select, textarea { font-size: 16px !important; }
     }
-    .topbar { display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; background: rgba(13,17,23,0.98); border-bottom: 1px solid rgba(196,120,58,0.15); position: sticky; top: 0; z-index: 50; }
-    .logo { font-family: 'Syne', sans-serif; font-size: 1.4rem; font-weight: 800; color: var(--terre); }
+
+    /* TOPBAR */
+    .topbar {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 15px 20px;
+      background: rgba(13,17,23,0.98); backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(196,120,58,0.12);
+      position: sticky; top: 0; z-index: 50;
+    }
+    .logo { font-family: 'Syne', sans-serif; font-size: 1.4rem; font-weight: 800; color: var(--terre); letter-spacing: -0.5px; }
     .logo span { color: var(--vert-light); }
-    .user-pill { display: flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.06); border-radius: 40px; padding: 6px 12px; cursor: pointer; }
-    .user-avatar { width: 28px; height: 28px; border-radius: 50%; background: var(--terre); display: flex; align-items: center; justify-content: center; font-family: 'Syne', sans-serif; font-weight: 800; font-size: 0.7rem; }
+    .user-pill {
+      display: flex; align-items: center; gap: 8px;
+      background: rgba(255,255,255,0.06); border-radius: 40px;
+      padding: 6px 14px 6px 6px; cursor: pointer;
+      border: 1px solid rgba(255,255,255,0.07);
+      transition: background .2s;
+    }
+    .user-pill:hover { background: rgba(255,255,255,0.1); }
+    .user-avatar {
+      width: 30px; height: 30px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--terre), var(--terre2));
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Syne', sans-serif; font-weight: 800; font-size: 0.7rem;
+    }
     .user-name { font-size: 0.82rem; font-weight: 500; }
-    .welcome { padding: 28px 20px 0; background: linear-gradient(135deg, rgba(196,120,58,0.08) 0%, transparent 60%); }
-    .welcome-text { font-size: 0.85rem; color: var(--gris); }
-    .welcome-name { font-family: 'Syne', sans-serif; font-size: 1.6rem; font-weight: 800; letter-spacing: -1px; color: var(--blanc); }
+
+    /* WELCOME */
+    .welcome {
+      padding: 28px 20px 0;
+      background: linear-gradient(135deg, rgba(196,120,58,0.07) 0%, transparent 60%);
+    }
+    .welcome-text { font-size: 0.82rem; color: var(--gris); margin-bottom: 2px; }
+    .welcome-name { font-family: 'Syne', sans-serif; font-size: 1.6rem; font-weight: 800; letter-spacing: -1px; }
     .welcome-name span { color: var(--terre); }
+    .welcome-badge {
+      display: inline-flex; align-items: center; gap: 6px; margin-top: 10px;
+      background: rgba(82,183,136,0.1); border: 1px solid rgba(82,183,136,0.25);
+      color: var(--vert-light); padding: 5px 12px; border-radius: 40px;
+      font-size: 0.74rem; font-weight: 600;
+    }
+
+    /* STATS */
     .stats-row { display: flex; gap: 12px; padding: 20px 20px 0; overflow-x: auto; }
-    .stat-card { min-width: 110px; flex: 1; background: var(--card); border: 1px solid rgba(255,255,255,0.08); border-radius: var(--radius); padding: 16px 14px; text-align: center; }
-    .stat-num { font-family: 'Syne', sans-serif; font-size: 1.5rem; font-weight: 800; color: var(--terre); }
-    .stat-label { font-size: 0.72rem; color: var(--gris); margin-top: 2px; }
+    .stat-card {
+      min-width: 110px; flex: 1;
+      background: var(--card); border: 1px solid rgba(255,255,255,0.07);
+      border-radius: var(--radius); padding: 16px 14px; text-align: center;
+      transition: border-color .2s, transform .2s;
+    }
+    .stat-card:hover { border-color: var(--card-border); transform: translateY(-2px); }
+    .stat-num { font-family: 'Syne', sans-serif; font-size: 1.6rem; font-weight: 800; color: var(--terre); }
+    .stat-label { font-size: 0.7rem; color: var(--gris); margin-top: 3px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+    /* SECTION */
     .section { padding: 28px 20px 0; }
     .section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
     .section-title { font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 800; }
-    .btn-add { background: var(--terre); color: #fff; padding: 9px 18px; border-radius: 10px; border: none; cursor: pointer; font-family: 'Syne', sans-serif; font-size: 0.82rem; font-weight: 700; display: flex; align-items: center; gap: 6px; transition: opacity .2s; }
-    .btn-add:hover { opacity: 0.88; }
-    .annonce-item { background: var(--card); border: 1px solid rgba(255,255,255,0.08); border-radius: var(--radius); padding: 18px 16px; margin-bottom: 12px; animation: fadeIn .4s ease both; }
+    .btn-add {
+      background: linear-gradient(135deg, var(--terre), var(--terre2));
+      color: #fff; padding: 9px 18px; border-radius: 10px; border: none;
+      cursor: pointer; font-family: 'Syne', sans-serif; font-size: 0.82rem;
+      font-weight: 700; display: flex; align-items: center; gap: 6px;
+      transition: opacity .2s, transform .2s;
+      box-shadow: 0 2px 12px rgba(196,120,58,0.3);
+    }
+    .btn-add:hover { opacity: 0.9; transform: translateY(-1px); }
+
+    /* ANNONCE ITEM */
+    .annonce-item {
+      background: var(--card); border: 1px solid rgba(255,255,255,0.07);
+      border-radius: var(--radius); padding: 18px 16px; margin-bottom: 12px;
+      animation: fadeIn .4s ease both; transition: border-color .2s;
+    }
+    .annonce-item:hover { border-color: rgba(196,120,58,0.2); }
     @keyframes fadeIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:none; } }
+
     .ann-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
     .ann-trajet { font-family: 'Syne', sans-serif; font-size: 1rem; font-weight: 800; }
     .arr-arrow { color: var(--terre); }
     .ann-meta { font-size: 0.78rem; color: var(--gris); margin-top: 3px; }
-    .status-badge { padding: 4px 10px; border-radius: 6px; font-size: 0.72rem; font-family: 'Syne', sans-serif; font-weight: 700; }
-    .status-active { background: rgba(82,183,136,0.15); color: var(--vert-light); border: 1px solid rgba(82,183,136,0.3); }
-    .status-expired { background: rgba(255,255,255,0.06); color: var(--gris); border: 1px solid rgba(255,255,255,0.1); }
-    .ann-chips { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
-    .chip { background: rgba(255,255,255,0.05); border-radius: 8px; padding: 4px 9px; font-size: 0.75rem; color: var(--sable); display: flex; align-items: center; gap: 4px; }
-    .chip-prix { background: rgba(196,120,58,0.12); color: var(--terre); }
+    .status-badge { padding: 4px 10px; border-radius: 6px; font-size: 0.7rem; font-family: 'Syne', sans-serif; font-weight: 700; white-space: nowrap; }
+    .status-active { background: rgba(82,183,136,0.12); color: var(--vert-light); border: 1px solid rgba(82,183,136,0.25); }
+    .status-expired { background: rgba(255,255,255,0.05); color: var(--gris); border: 1px solid rgba(255,255,255,0.08); }
+
+    .ann-chips { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
+    .chip { background: rgba(255,255,255,0.05); border-radius: 8px; padding: 5px 10px; font-size: 0.75rem; color: var(--sable); display: flex; align-items: center; gap: 4px; }
+    .chip-prix { background: rgba(196,120,58,0.1); color: var(--terre); }
+    .chip-green { background: rgba(82,183,136,0.1); color: var(--vert-light); }
+
     .ann-actions { display: flex; gap: 8px; }
-    .btn-edit { flex: 1; padding: 9px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; color: var(--sable); font-size: 0.8rem; cursor: pointer; font-family: 'DM Sans', sans-serif; }
-    .btn-delete { padding: 9px 14px; background: rgba(220,53,69,0.1); border: 1px solid rgba(220,53,69,0.25); border-radius: 10px; color: #e87878; font-size: 0.8rem; cursor: pointer; font-family: 'DM Sans', sans-serif; }
-    .empty-annonces { text-align: center; padding: 40px 20px; background: var(--card); border: 1px dashed rgba(196,120,58,0.2); border-radius: var(--radius); }
+    .btn-edit { flex: 1; padding: 9px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.09); border-radius: 10px; color: var(--sable); font-size: 0.8rem; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: background .2s; }
+    .btn-edit:hover { background: rgba(255,255,255,0.1); }
+    .btn-delete { padding: 9px 14px; background: rgba(220,53,69,0.08); border: 1px solid rgba(220,53,69,0.2); border-radius: 10px; color: #e87878; font-size: 0.8rem; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: background .2s; }
+    .btn-delete:hover { background: rgba(220,53,69,0.15); }
+
+    .empty-annonces {
+      text-align: center; padding: 40px 20px;
+      background: var(--card); border: 1px dashed rgba(196,120,58,0.18);
+      border-radius: var(--radius);
+    }
     .empty-annonces .e-icon { font-size: 2.5rem; margin-bottom: 10px; }
     .empty-annonces p { font-size: 0.85rem; color: var(--gris); }
-    .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(13,17,23,0.96); backdrop-filter: blur(12px); border-top: 1px solid rgba(255,255,255,0.07); display: flex; padding: 10px 0 20px; }
+
+    /* BOTTOM NAV */
+    .bottom-nav {
+      position: fixed; bottom: 0; left: 0; right: 0;
+      background: rgba(13,17,23,0.97); backdrop-filter: blur(16px);
+      border-top: 1px solid rgba(255,255,255,0.06);
+      display: flex; padding: 10px 0 20px;
+    }
     .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 4px; cursor: pointer; text-decoration: none; color: var(--gris); transition: color .2s; }
     .nav-item.active { color: var(--terre); }
     .nav-icon { font-size: 1.3rem; }
     .nav-label { font-size: 0.65rem; font-family: 'Syne', sans-serif; font-weight: 700; }
-    /* Modal publication */
-    .pub-overlay { position: fixed; inset: 0; z-index: 200; background: rgba(0,0,0,0.75); backdrop-filter: blur(6px); display: none; align-items: flex-end; justify-content: center; }
+
+    /* MODAL PUBLICATION */
+    .pub-overlay {
+      position: fixed; inset: 0; z-index: 200;
+      background: rgba(0,0,0,0.8); backdrop-filter: blur(8px);
+      display: none; align-items: flex-end; justify-content: center;
+    }
     .pub-overlay.open { display: flex; }
-    .pub-sheet { background: var(--savane); border-radius: 24px 24px 0 0; width: 100%; max-width: 480px; max-height: 92vh; overflow-y: auto; padding: 32px 24px 40px; border-top: 3px solid var(--terre); animation: slideUp .3s ease; position: relative; }
+    .pub-sheet {
+      background: var(--savane); border-radius: 24px 24px 0 0;
+      width: 100%; max-width: 480px; max-height: 92vh; overflow-y: auto;
+      padding: 32px 24px 44px; border-top: 3px solid var(--terre);
+      animation: slideUp .3s cubic-bezier(.34,1.2,.64,1); position: relative;
+    }
     @keyframes slideUp { from { transform:translateY(100%); } to { transform:none; } }
-    .pub-close { position: absolute; top: 16px; right: 20px; background: none; border: none; color: var(--gris); font-size: 1.4rem; cursor: pointer; }
+    .pub-close {
+      position: absolute; top: 16px; right: 20px; background: rgba(255,255,255,0.08);
+      border: none; color: var(--gris); font-size: 1rem; cursor: pointer;
+      width: 32px; height: 32px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center; transition: background .2s;
+    }
+    .pub-close:hover { background: rgba(255,255,255,0.15); color: var(--blanc); }
     .pub-sheet h2 { font-family: 'Syne', sans-serif; font-size: 1.4rem; font-weight: 800; margin-bottom: 4px; letter-spacing: -0.5px; }
     .pub-sub { font-size: 0.82rem; color: var(--gris); margin-bottom: 24px; }
+
     .form-group { margin-bottom: 16px; }
-    .form-group label { display: block; font-size: 0.76rem; font-weight: 500; color: var(--sable); margin-bottom: 6px; text-transform: uppercase; letter-spacing: .5px; }
-    .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 12px 14px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); border-radius: 12px; color: var(--blanc); font-family: 'DM Sans', sans-serif; font-size: 0.9rem; outline: none; transition: border-color .2s; }
-    .form-group input:focus, .form-group select:focus { border-color: var(--terre); }
+    .form-group label { display: block; font-size: 0.72rem; font-weight: 600; color: var(--sable); margin-bottom: 7px; text-transform: uppercase; letter-spacing: .6px; }
+    .form-group input, .form-group select, .form-group textarea {
+      width: 100%; padding: 12px 14px;
+      background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 12px; color: var(--blanc);
+      font-family: 'DM Sans', sans-serif; font-size: 0.9rem;
+      outline: none; transition: border-color .2s, background .2s;
+    }
+    .form-group input:focus, .form-group select:focus { border-color: var(--terre); background: rgba(196,120,58,0.04); }
     .form-group select option { background: var(--savane); }
     .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-    .toggle-row { display: flex; align-items: center; justify-content: space-between; padding: 12px 0; border-top: 1px solid rgba(255,255,255,0.06); border-bottom: 1px solid rgba(255,255,255,0.06); margin-bottom: 16px; }
+
+    .toggle-row { display: flex; align-items: center; justify-content: space-between; padding: 14px 0; border-top: 1px solid rgba(255,255,255,0.06); border-bottom: 1px solid rgba(255,255,255,0.06); margin-bottom: 16px; }
     .toggle-label { font-size: 0.9rem; font-weight: 500; }
     .toggle-sub { font-size: 0.75rem; color: var(--gris); margin-top: 2px; }
-    .toggle { width: 44px; height: 24px; border-radius: 12px; background: rgba(255,255,255,0.1); position: relative; cursor: pointer; transition: background .2s; }
+    .toggle { width: 46px; height: 26px; border-radius: 13px; background: rgba(255,255,255,0.1); position: relative; cursor: pointer; transition: background .2s; }
     .toggle.on { background: var(--vert-light); }
-    .toggle::after { content:''; position: absolute; width: 18px; height: 18px; border-radius: 50%; background: #fff; top: 3px; left: 3px; transition: left .2s; }
+    .toggle::after { content:''; position: absolute; width: 20px; height: 20px; border-radius: 50%; background: #fff; top: 3px; left: 3px; transition: left .2s; box-shadow: 0 1px 4px rgba(0,0,0,0.3); }
     .toggle.on::after { left: 23px; }
-    .btn-publish { width: 100%; padding: 16px; background: var(--terre); color: #fff; border: none; border-radius: var(--radius); font-family: 'Syne', sans-serif; font-size: 1rem; font-weight: 700; cursor: pointer; transition: opacity .2s; display: flex; align-items: center; justify-content: center; gap: 8px; }
+
+    .btn-publish {
+      width: 100%; padding: 16px;
+      background: linear-gradient(135deg, var(--terre), var(--terre2));
+      color: #fff; border: none; border-radius: var(--radius);
+      font-family: 'Syne', sans-serif; font-size: 1rem; font-weight: 700;
+      cursor: pointer; transition: opacity .2s;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      box-shadow: 0 4px 20px rgba(196,120,58,0.35);
+    }
     .btn-publish:hover { opacity: 0.9; }
-    /* Notify */
-    .notify-bar { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%) translateY(80px); z-index: 999; background: var(--vert); color: #fff; padding: 12px 24px; border-radius: 40px; font-size: 0.9rem; font-weight: 500; transition: transform .35s ease; white-space: nowrap; }
+
+    /* NOTIFY */
+    .notify-bar {
+      position: fixed; bottom: 80px; left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      z-index: 999; background: var(--vert); color: #fff;
+      padding: 13px 26px; border-radius: 40px; font-size: 0.9rem; font-weight: 500;
+      transition: transform .35s cubic-bezier(.34,1.56,.64,1); white-space: nowrap;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.4);
+    }
     .notify-bar.show { transform: translateX(-50%) translateY(0); }
-    /* Loading */
-    .spinner { display: inline-block; width: 18px; height: 18px; border: 2px solid rgba(255,255,255,0.3); border-top-color: #fff; border-radius: 50%; animation: spin .7s linear infinite; }
+
+    /* LOADING */
+    .spinner { display: inline-block; width: 18px; height: 18px; border: 2px solid rgba(255,255,255,0.25); border-top-color: #fff; border-radius: 50%; animation: spin .7s linear infinite; }
     @keyframes spin { to { transform: rotate(360deg); } }
     .btn-loading { opacity: 0.7; pointer-events: none; }
-    /* Auth gate */
+
+    /* AUTH GATE */
     .auth-gate { min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 24px; text-align: center; }
     .auth-gate h2 { font-family: 'Syne', sans-serif; font-size: 1.4rem; margin-bottom: 8px; }
     .auth-gate p { color: var(--gris); margin-bottom: 24px; }
-    .btn-primary { display: flex; align-items: center; justify-content: center; gap: 10px; background: var(--terre); color: #fff; padding: 14px 28px; border-radius: var(--radius); font-family: 'Syne', sans-serif; font-size: 1rem; font-weight: 700; text-decoration: none; border: none; cursor: pointer; }
+    .btn-primary {
+      display: flex; align-items: center; justify-content: center; gap: 10px;
+      background: linear-gradient(135deg, var(--terre), var(--terre2));
+      color: #fff; padding: 14px 28px; border-radius: var(--radius);
+      font-family: 'Syne', sans-serif; font-size: 1rem; font-weight: 700;
+      text-decoration: none; border: none; cursor: pointer;
+    }
+
+    /* FOOTER */
+    footer {
+      padding: 44px 24px 36px; text-align: center;
+      border-top: 1px solid rgba(255,255,255,0.06); margin-top: 40px;
+      background: linear-gradient(0deg, rgba(196,120,58,0.04) 0%, transparent 100%);
+    }
+    .footer-logo { font-family: 'Syne', sans-serif; font-size: 1.4rem; font-weight: 800; color: var(--terre); margin-bottom: 4px; letter-spacing: -0.5px; }
+    .footer-sub { font-size: 0.82rem; color: var(--gris); margin-bottom: 28px; }
+    .footer-divider { width: 40px; height: 2px; background: var(--terre); border-radius: 2px; margin: 0 auto 24px; opacity: 0.4; }
+    .footer-contact { display: flex; flex-direction: column; gap: 12px; align-items: center; margin-bottom: 24px; }
+    .footer-contact-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.86rem; color: var(--terre); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
+    .footer-link { display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; border-radius: 40px; text-decoration: none; font-size: 0.9rem; font-weight: 500; transition: all .2s; }
+    .footer-link-email { color: var(--sable); background: rgba(245,230,200,0.07); border: 1px solid rgba(245,230,200,0.12); }
+    .footer-link-email:hover { background: rgba(245,230,200,0.13); }
+    .footer-link-wa { color: #fff; background: #128C7E; border: 1px solid rgba(18,140,126,0.4); }
+    .footer-link-wa:hover { background: #075E54; }
+    .footer-copy { font-size: 0.74rem; color: var(--gris); }
+    :root { --card-border: rgba(196,120,58,0.12); }
   </style>
 </head>
 <body>
 
 <div class="notify-bar" id="notifyBar"></div>
 
-<!-- Auth gate (affiché si non connecté) -->
+<!-- Auth gate -->
 <div class="auth-gate" id="authGate" style="display:none">
   <div style="font-size:3rem;margin-bottom:16px">🔒</div>
   <h2>Accès réservé</h2>
@@ -113,10 +254,9 @@
   <a href="index.html" class="btn-primary">Se connecter →</a>
 </div>
 
-<!-- Contenu principal (affiché si connecté) -->
+<!-- Contenu principal -->
 <div id="mainContent" style="display:none">
 
-  <!-- Top bar -->
   <div class="topbar">
     <div class="logo">GANDHI<span>.</span></div>
     <div class="user-pill" onclick="handleLogout()">
@@ -125,20 +265,18 @@
     </div>
   </div>
 
-  <!-- Welcome -->
   <div class="welcome">
     <div class="welcome-text">Bonjour,</div>
     <div class="welcome-name">🚗 <span id="welcomeName">Conducteur</span></div>
+    <div class="welcome-badge">✓ Compte conducteur actif</div>
   </div>
 
-  <!-- Stats -->
   <div class="stats-row">
     <div class="stat-card"><div class="stat-num" id="countActives">0</div><div class="stat-label">Actives</div></div>
     <div class="stat-card"><div class="stat-num" id="countTotal">0</div><div class="stat-label">Total</div></div>
     <div class="stat-card"><div class="stat-num" id="countPlaces">0</div><div class="stat-label">Places offertes</div></div>
   </div>
 
-  <!-- Annonces -->
   <div class="section">
     <div class="section-header">
       <div class="section-title">Mes annonces</div>
@@ -147,7 +285,22 @@
     <div id="annoncesList"></div>
   </div>
 
-  <!-- Bottom nav -->
+  <footer>
+    <div class="footer-logo">GANDHI.</div>
+    <div class="footer-sub">Covoiturage interurbain entre particuliers au Sénégal</div>
+    <div class="footer-divider"></div>
+    <div class="footer-contact">
+      <div class="footer-contact-title">Nous contacter</div>
+      <a href="mailto:gandhitransport221@gmail.com" class="footer-link footer-link-email">
+        📧 gandhitransport221@gmail.com
+      </a>
+      <a href="https://wa.me/221761707776" target="_blank" class="footer-link footer-link-wa">
+        💬 WhatsApp : <strong>76 170 77 76</strong>
+      </a>
+    </div>
+    <div class="footer-copy">© 2025 Gandhi · Tous droits réservés</div>
+  </footer>
+
   <nav class="bottom-nav">
     <a class="nav-item active" href="dashboard.html">
       <span class="nav-icon">🚗</span>
@@ -168,7 +321,7 @@
 <div class="pub-overlay" id="pubOverlay" onclick="closePubOutside(event)">
   <div class="pub-sheet">
     <button class="pub-close" onclick="closePub()">✕</button>
-    <h2>Nouveau trajet</h2>
+    <h2 id="pubModalTitle">Nouveau trajet</h2>
     <p class="pub-sub">Renseignez les informations de votre trajet.</p>
 
     <div class="form-row">
@@ -248,7 +401,7 @@
       <input type="number" id="pub-rayon" value="2" min="1" max="10" />
     </div>
 
-    <div style="background:rgba(82,183,136,0.08);border:1px solid rgba(82,183,136,0.25);border-radius:14px;padding:14px 16px;margin-bottom:16px;display:flex;align-items:center;gap:10px">
+    <div style="background:rgba(82,183,136,0.07);border:1px solid rgba(82,183,136,0.2);border-radius:14px;padding:14px 16px;margin-bottom:16px;display:flex;align-items:center;gap:10px">
       <span style="font-size:1.3rem">🎁</span>
       <div>
         <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:0.88rem;color:var(--vert-light)">Gratuit pendant la période de lancement</div>
@@ -256,14 +409,14 @@
       </div>
     </div>
 
-    <button class="btn-publish" id="publishBtn" onclick="publishAnnonce()">Publier gratuitement →</button>
+    <button class="btn-publish" id="publishBtn" onclick="publishOrUpdateAnnonce()">Publier gratuitement →</button>
   </div>
 </div>
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
   import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-  import { getFirestore, doc, getDoc, collection, query, where, getDocs, addDoc, deleteDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+  import { getFirestore, doc, getDoc, collection, query, where, getDocs, addDoc, updateDoc, deleteDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyCEQCpB69WR4qRAbQ9qfIcCsPRm9-l_Lw8",
@@ -282,6 +435,7 @@
   let currentUserData = null;
   let domicileOn = true;
   let annonces = [];
+  let editingId = null;
 
   onAuthStateChanged(auth, async (user) => {
     if (!user) {
@@ -314,7 +468,6 @@
   function renderAnnonces() {
     const list = document.getElementById('annoncesList');
     const today = new Date().toISOString().split('T')[0];
-    // Marquer les annonces expirées
     annonces = annonces.map(a => ({ ...a, status: a.date >= today ? 'active' : 'expired' }));
 
     const actives = annonces.filter(a => a.status === 'active').length;
@@ -342,9 +495,10 @@
           <div class="chip">💺 ${a.places} place${a.places>1?'s':''}</div>
           <div class="chip chip-prix">💰 ${Number(a.prix).toLocaleString('fr')} F</div>
           <div class="chip">🚗 ${a.marque}</div>
-          ${a.domicile ? '<div class="chip" style="color:var(--vert-light)">🏠 Domicile</div>' : ''}
+          ${a.domicile ? '<div class="chip chip-green">🏠 Domicile</div>' : ''}
         </div>
         <div class="ann-actions">
+          <button class="btn-edit" onclick="openEditAnnonce('${a.id}')">✏️ Modifier</button>
           <button class="btn-delete" onclick="deleteAnnonce('${a.id}')">🗑 Supprimer</button>
         </div>
       </div>
@@ -366,7 +520,47 @@
     notify('Annonce supprimée.', 'success');
   };
 
-  window.openPublication = function() { document.getElementById('pubOverlay').classList.add('open'); };
+  window.openEditAnnonce = function(id) {
+    const annonce = annonces.find(a => a.id === id);
+    if (!annonce) return;
+    editingId = id;
+    document.getElementById('pub-dep').value = annonce.dep;
+    document.getElementById('pub-qDep').value = annonce.qDep || '';
+    document.getElementById('pub-arr').value = annonce.arr;
+    document.getElementById('pub-qArr').value = annonce.qArr || '';
+    document.getElementById('pub-date').value = annonce.date;
+    document.getElementById('pub-heure').value = annonce.heure;
+    document.getElementById('pub-places').value = annonce.places;
+    document.getElementById('pub-prix').value = annonce.prix;
+    document.getElementById('pub-marque').value = annonce.marque;
+    domicileOn = annonce.domicile;
+    document.getElementById('domicileToggle').classList.toggle('on', domicileOn);
+    document.getElementById('rayonGroup').style.display = domicileOn ? '' : 'none';
+    if (annonce.rayon) document.getElementById('pub-rayon').value = annonce.rayon;
+    document.getElementById('pubModalTitle').textContent = 'Modifier le trajet';
+    document.getElementById('publishBtn').innerHTML = 'Mettre à jour →';
+    document.getElementById('pubOverlay').classList.add('open');
+  };
+
+  window.openPublication = function() {
+    editingId = null;
+    document.getElementById('pub-dep').value = '';
+    document.getElementById('pub-qDep').value = '';
+    document.getElementById('pub-arr').value = '';
+    document.getElementById('pub-qArr').value = '';
+    document.getElementById('pub-date').value = new Date().toISOString().split('T')[0];
+    document.getElementById('pub-heure').value = '';
+    document.getElementById('pub-places').value = '3';
+    document.getElementById('pub-prix').value = '';
+    document.getElementById('pub-marque').value = '';
+    domicileOn = true;
+    document.getElementById('domicileToggle').classList.add('on');
+    document.getElementById('rayonGroup').style.display = '';
+    document.getElementById('pub-rayon').value = '2';
+    document.getElementById('pubModalTitle').textContent = 'Nouveau trajet';
+    document.getElementById('publishBtn').innerHTML = 'Publier gratuitement →';
+    document.getElementById('pubOverlay').classList.add('open');
+  };
   window.closePub = function() { document.getElementById('pubOverlay').classList.remove('open'); };
   window.closePubOutside = function(e) { if (e.target.id === 'pubOverlay') window.closePub(); };
 
@@ -376,7 +570,7 @@
     document.getElementById('rayonGroup').style.display = domicileOn ? '' : 'none';
   };
 
-  window.publishAnnonce = async function() {
+  window.publishOrUpdateAnnonce = async function() {
     const dep = document.getElementById('pub-dep').value;
     const arr = document.getElementById('pub-arr').value;
     const date = document.getElementById('pub-date').value;
@@ -384,9 +578,7 @@
     const prix = document.getElementById('pub-prix').value;
     const marque = document.getElementById('pub-marque').value;
 
-    if (!dep || !arr || !date || !heure || !prix || !marque) {
-      notify('Remplissez tous les champs obligatoires (*)', 'error'); return;
-    }
+    if (!dep || !arr || !date || !heure || !prix || !marque) { notify('Remplissez tous les champs obligatoires (*)', 'error'); return; }
     if (dep === arr) { notify('Départ et arrivée doivent être différents', 'error'); return; }
 
     const btn = document.getElementById('publishBtn');
@@ -406,20 +598,26 @@
         prix: parseInt(prix),
         domicile: domicileOn,
         rayon: domicileOn ? parseInt(document.getElementById('pub-rayon').value) : 0,
-        marque,
-        createdAt: serverTimestamp()
+        marque, updatedAt: serverTimestamp()
       };
 
-      const docRef = await addDoc(collection(db, 'annonces'), annonceData);
-      annonces.unshift({ id: docRef.id, ...annonceData, status: 'active' });
+      if (editingId) {
+        await updateDoc(doc(db, 'annonces', editingId), annonceData);
+        const index = annonces.findIndex(a => a.id === editingId);
+        if (index !== -1) annonces[index] = { ...annonces[index], ...annonceData };
+        notify('✅ Annonce mise à jour !', 'success');
+      } else {
+        const docRef = await addDoc(collection(db, 'annonces'), { ...annonceData, createdAt: serverTimestamp() });
+        annonces.unshift({ id: docRef.id, ...annonceData, status: 'active' });
+        notify('🎉 Annonce publiée avec succès !', 'success');
+      }
       renderAnnonces();
       window.closePub();
-      notify('🎉 Annonce publiée avec succès !', 'success');
     } catch(err) {
       console.error(err);
       notify('Erreur : ' + err.message, 'error');
     } finally {
-      btn.innerHTML = 'Publier gratuitement →';
+      btn.innerHTML = editingId ? 'Mettre à jour →' : 'Publier gratuitement →';
       btn.classList.remove('btn-loading');
     }
   };
@@ -438,7 +636,6 @@
     setTimeout(() => bar.classList.remove('show'), 3000);
   }
 
-  // Date par défaut
   document.getElementById('pub-date').value = new Date().toISOString().split('T')[0];
 </script>
 </body>

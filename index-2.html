@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GANDHI — Covoiturage Sénégal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --sable: #F5E6C8; --terre: #C4783A; --nuit: #0D1117;
+      --savane: #1A1208; --vert: #2D6A4F; --vert-light: #52B788;
+      --blanc: #FEFAF3; --gris: #8A7B6E; --radius: 16px;
+      --terre2: #E08840; --card-border: rgba(196,120,58,0.12);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'DM Sans', sans-serif; font-size: 16px; background: var(--nuit); color: var(--blanc); min-height: 100vh; overflow-x: hidden; }
+
+    @media (max-width: 600px) {
+      body { font-size: 14px; }
+      h1 { font-size: 1.5rem !important; }
+      h2 { font-size: 1.3rem !important; }
+      button, .btn-primary, .btn-secondary { font-size: 1rem; padding: 12px 16px; }
+      input, select, textarea { font-size: 16px !important; }
+    }
+
+    /* NAV */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 16px 24px;
+      background: rgba(13,17,23,0.9); backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(196,120,58,0.12);
+      transition: background 0.3s;
+    }
+    .logo { font-family: 'Syne', sans-serif; font-size: 1.6rem; font-weight: 800; letter-spacing: -1px; color: var(--terre); }
+    .logo span { color: var(--vert-light); }
+    .nav-btn {
+      color: var(--sable); text-decoration: none; font-size: 0.88rem; font-weight: 500;
+      padding: 9px 20px; border-radius: 40px;
+      border: 1px solid rgba(245,230,200,0.18);
+      transition: all .25s; cursor: pointer; background: none;
+      font-family: 'DM Sans', sans-serif;
+    }
+    .nav-btn:hover { background: var(--terre); color: #fff; border-color: var(--terre); }
+
+    /* HERO */
+    .hero {
+      min-height: 100vh; display: flex; flex-direction: column; justify-content: center;
+      padding: 110px 24px 60px; position: relative; overflow: hidden;
+    }
+    .hero-bg {
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse 70% 55% at 75% 35%, rgba(196,120,58,0.22) 0%, transparent 65%),
+        radial-gradient(ellipse 55% 45% at 15% 75%, rgba(45,106,79,0.18) 0%, transparent 60%),
+        radial-gradient(ellipse 40% 35% at 50% 95%, rgba(196,120,58,0.08) 0%, transparent 50%),
+        var(--nuit);
+    }
+    .hero-pattern {
+      position: absolute; inset: 0; opacity: 0.035;
+      background-image: repeating-linear-gradient(45deg, var(--terre) 0, var(--terre) 1px, transparent 0, transparent 50%);
+      background-size: 20px 20px;
+    }
+    .hero-glow {
+      position: absolute; top: 20%; right: -10%; width: 400px; height: 400px;
+      background: radial-gradient(circle, rgba(196,120,58,0.15) 0%, transparent 70%);
+      border-radius: 50%; pointer-events: none; animation: pulse 4s ease-in-out infinite;
+    }
+    @keyframes pulse { 0%,100% { transform: scale(1); opacity: 0.6; } 50% { transform: scale(1.1); opacity: 1; } }
+
+    .hero-content { position: relative; max-width: 500px; }
+    .badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(196,120,58,0.12); border: 1px solid rgba(196,120,58,0.35);
+      color: var(--terre); padding: 7px 16px; border-radius: 40px;
+      font-size: 0.78rem; font-weight: 600; letter-spacing: .5px; margin-bottom: 28px;
+      animation: fadeUp .5s ease both;
+    }
+    .badge::before { content: '🇸🇳'; font-size: 1rem; }
+
+    h1 {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(2.8rem, 10vw, 4.4rem);
+      font-weight: 800; line-height: 1.04; letter-spacing: -2.5px;
+      animation: fadeUp .5s .1s ease both;
+    }
+    h1 .accent { color: var(--terre); }
+    h1 .accent2 { color: var(--vert-light); }
+
+    .hero-sub {
+      margin-top: 22px; font-size: 1.05rem; color: var(--sable); opacity: 0.78;
+      line-height: 1.65; max-width: 380px; animation: fadeUp .5s .2s ease both;
+    }
+
+    .cta-group { display: flex; flex-direction: column; gap: 12px; margin-top: 36px; animation: fadeUp .5s .3s ease both; }
+    .btn-primary {
+      display: flex; align-items: center; justify-content: center; gap: 10px;
+      background: linear-gradient(135deg, var(--terre) 0%, var(--terre2) 100%);
+      color: #fff; padding: 16px 28px; border-radius: var(--radius);
+      font-family: 'Syne', sans-serif; font-size: 1rem; font-weight: 700;
+      text-decoration: none; border: none; cursor: pointer;
+      transition: transform .2s, box-shadow .2s;
+      box-shadow: 0 4px 24px rgba(196,120,58,0.4), 0 1px 0 rgba(255,255,255,0.1) inset;
+    }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 36px rgba(196,120,58,0.55); }
+    .btn-primary:active { transform: translateY(0); }
+
+    .btn-secondary {
+      display: flex; align-items: center; justify-content: center; gap: 10px;
+      background: rgba(82,183,136,0.08); color: var(--vert-light);
+      padding: 15px 28px; border-radius: var(--radius);
+      font-family: 'Syne', sans-serif; font-size: 1rem; font-weight: 700;
+      text-decoration: none; border: 2px solid rgba(82,183,136,0.4);
+      cursor: pointer; transition: all .2s;
+    }
+    .btn-secondary:hover { background: var(--vert-light); color: var(--nuit); border-color: var(--vert-light); }
+
+    .stats { display: flex; gap: 28px; margin-top: 52px; animation: fadeUp .5s .4s ease both; }
+    .stat { text-align: center; }
+    .stat-num { font-family: 'Syne', sans-serif; font-size: 2rem; font-weight: 800; color: var(--terre); }
+    .stat-label { font-size: 0.7rem; color: var(--gris); text-transform: uppercase; letter-spacing: 1.2px; margin-top: 2px; }
+
+    /* SECTIONS */
+    .section { padding: 80px 24px; }
+    .section-title { font-family: 'Syne', sans-serif; font-size: 1.9rem; font-weight: 800; margin-bottom: 8px; letter-spacing: -1px; }
+    .section-sub { color: var(--gris); font-size: 0.95rem; margin-bottom: 40px; }
+
+    /* FEATURES */
+    .features-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .feature-card {
+      background: rgba(255,255,255,0.035);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: var(--radius); padding: 24px 20px;
+      transition: border-color .25s, transform .25s, background .25s;
+      position: relative; overflow: hidden;
+    }
+    .feature-card::before {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(135deg, rgba(196,120,58,0.04) 0%, transparent 60%);
+      opacity: 0; transition: opacity .25s;
+    }
+    .feature-card:hover { border-color: rgba(196,120,58,0.4); transform: translateY(-3px); background: rgba(196,120,58,0.04); }
+    .feature-card:hover::before { opacity: 1; }
+    .feature-icon { font-size: 1.9rem; margin-bottom: 12px; }
+    .feature-card h3 { font-family: 'Syne', sans-serif; font-size: 0.95rem; font-weight: 700; margin-bottom: 6px; }
+    .feature-card p { font-size: 0.82rem; color: var(--gris); line-height: 1.5; }
+
+    /* HOW */
+    .how-bg {
+      background: rgba(255,255,255,0.02);
+      border-top: 1px solid rgba(255,255,255,0.05);
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+    .tabs { display: flex; gap: 0; margin-bottom: 32px; background: rgba(255,255,255,0.05); border-radius: 12px; padding: 4px; }
+    .tab {
+      flex: 1; padding: 11px; border-radius: 10px; border: none; cursor: pointer;
+      font-family: 'Syne', sans-serif; font-size: 0.85rem; font-weight: 700;
+      background: transparent; color: var(--gris); transition: all .2s;
+    }
+    .tab.active { background: var(--terre); color: #fff; box-shadow: 0 2px 12px rgba(196,120,58,0.3); }
+
+    .steps { display: none; }
+    .steps.active { display: flex; flex-direction: column; gap: 20px; }
+    .step { display: flex; gap: 16px; align-items: flex-start; }
+    .step-num {
+      min-width: 38px; height: 38px; background: linear-gradient(135deg, var(--terre), var(--terre2));
+      border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      font-family: 'Syne', sans-serif; font-weight: 800; font-size: 0.9rem;
+      box-shadow: 0 2px 10px rgba(196,120,58,0.35);
+    }
+    .step-text h4 { font-family: 'Syne', sans-serif; font-weight: 700; margin-bottom: 4px; font-size: 0.95rem; }
+    .step-text p { font-size: 0.84rem; color: var(--gris); line-height: 1.5; }
+
+    /* PRICING */
+    .pricing-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .price-card {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: var(--radius); padding: 28px 20px; text-align: center;
+      transition: border-color .25s, transform .25s;
+    }
+    .price-card:hover { border-color: rgba(82,183,136,0.4); transform: translateY(-3px); }
+    .price-card h3 { font-family: 'Syne', sans-serif; font-size: 1rem; margin-bottom: 14px; }
+    .price-num { font-family: 'Syne', sans-serif; font-size: 2.2rem; font-weight: 800; color: var(--vert-light); }
+    .price-sub { font-size: 0.78rem; color: var(--gris); margin-top: 4px; }
+
+    /* FOOTER */
+    footer {
+      padding: 48px 24px 40px; text-align: center;
+      border-top: 1px solid rgba(255,255,255,0.06);
+      background: linear-gradient(0deg, rgba(196,120,58,0.04) 0%, transparent 100%);
+    }
+    .footer-logo { font-family: 'Syne', sans-serif; font-size: 1.6rem; font-weight: 800; color: var(--terre); margin-bottom: 4px; letter-spacing: -1px; }
+    .footer-sub { font-size: 0.82rem; color: var(--gris); margin-bottom: 28px; }
+    .footer-contact { display: flex; flex-direction: column; gap: 12px; align-items: center; margin-bottom: 24px; }
+    .footer-contact-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.88rem; color: var(--terre); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
+    .footer-link {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 10px 20px; border-radius: 40px; text-decoration: none;
+      font-size: 0.9rem; font-weight: 500; transition: all .2s;
+    }
+    .footer-link-email { color: var(--sable); background: rgba(245,230,200,0.07); border: 1px solid rgba(245,230,200,0.12); }
+    .footer-link-email:hover { background: rgba(245,230,200,0.14); }
+    .footer-link-wa { color: #fff; background: #128C7E; border: 1px solid rgba(18,140,126,0.4); }
+    .footer-link-wa:hover { background: #075E54; }
+    .footer-copy { font-size: 0.74rem; color: var(--gris); }
+    .footer-divider { width: 40px; height: 2px; background: var(--terre); border-radius: 2px; margin: 0 auto 24px; opacity: 0.4; }
+
+    /* NOTIFY */
+    .notify-bar {
+      position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px);
+      z-index: 999; background: var(--vert); color: #fff;
+      padding: 13px 26px; border-radius: 40px; font-size: 0.9rem; font-weight: 500;
+      transition: transform .35s cubic-bezier(.34,1.56,.64,1); white-space: nowrap;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.4);
+    }
+    .notify-bar.show { transform: translateX(-50%) translateY(0); }
+
+    /* MODAL */
+    .modal-overlay {
+      position: fixed; inset: 0; z-index: 300;
+      background: rgba(0,0,0,0.85); backdrop-filter: blur(10px);
+      display: none; align-items: flex-end; justify-content: center;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal-sheet {
+      background: var(--savane); border-radius: 24px 24px 0 0;
+      width: 100%; max-width: 480px; max-height: 92vh; overflow-y: auto;
+      padding: 32px 24px 52px; border-top: 3px solid var(--terre);
+      animation: slideUp .3s cubic-bezier(.34,1.2,.64,1); position: relative;
+    }
+    @keyframes slideUp { from { transform:translateY(100%); } to { transform:none; } }
+    .modal-close {
+      position: absolute; top: 16px; right: 20px;
+      background: rgba(255,255,255,0.08); border: none; color: var(--gris);
+      font-size: 1rem; cursor: pointer; width: 32px; height: 32px;
+      border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      transition: background .2s;
+    }
+    .modal-close:hover { background: rgba(255,255,255,0.15); color: var(--blanc); }
+    .modal-sheet h2 { font-family: 'Syne', sans-serif; font-size: 1.4rem; font-weight: 800; margin-bottom: 4px; letter-spacing: -0.5px; }
+    .modal-sub { font-size: 0.84rem; color: var(--gris); margin-bottom: 24px; }
+
+    .step-indicator { display: flex; gap: 8px; margin-bottom: 24px; }
+    .step-dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.12); transition: all .3s; }
+    .step-dot.active { background: var(--terre); width: 26px; border-radius: 4px; }
+    .step-dot.done { background: var(--vert-light); }
+
+    .form-group { margin-bottom: 16px; }
+    .form-group label { display: block; font-size: 0.74rem; font-weight: 600; color: var(--sable); margin-bottom: 7px; text-transform: uppercase; letter-spacing: .6px; }
+    .form-group input, .form-group select {
+      width: 100%; padding: 13px 14px;
+      background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 12px; color: var(--blanc);
+      font-family: 'DM Sans', sans-serif; font-size: 0.95rem;
+      outline: none; transition: border-color .2s, background .2s;
+    }
+    .form-group input:focus, .form-group select:focus { border-color: var(--terre); background: rgba(196,120,58,0.05); }
+    .form-group select option { background: var(--savane); }
+
+    .role-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+    .role-btn {
+      display: flex; flex-direction: column; align-items: center; gap: 8px;
+      padding: 22px 16px; background: rgba(255,255,255,0.04);
+      border: 2px solid rgba(255,255,255,0.08); border-radius: var(--radius);
+      cursor: pointer; transition: all .2s; color: var(--blanc);
+    }
+    .role-btn:hover { border-color: rgba(196,120,58,0.5); background: rgba(196,120,58,0.05); }
+    .role-btn.selected { border-color: var(--terre); background: rgba(196,120,58,0.12); }
+    .role-icon { font-size: 2.2rem; }
+    .role-name { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.95rem; }
+    .role-desc { font-size: 0.74rem; color: var(--gris); }
+
+    .otp-row { display: flex; gap: 10px; justify-content: center; margin: 20px 0; }
+    .otp-input {
+      width: 52px; height: 62px; text-align: center;
+      font-family: 'Syne', sans-serif; font-size: 1.6rem; font-weight: 800;
+      background: rgba(255,255,255,0.07); border: 2px solid rgba(255,255,255,0.12);
+      border-radius: 14px; color: var(--blanc); outline: none; transition: border-color .2s;
+    }
+    .otp-input:focus { border-color: var(--terre); background: rgba(196,120,58,0.06); }
+
+    .upload-zone {
+      border: 2px dashed rgba(255,255,255,0.12); border-radius: 14px;
+      padding: 20px; text-align: center; cursor: pointer; position: relative;
+      transition: all .2s; margin-bottom: 8px;
+    }
+    .upload-zone:hover { border-color: var(--terre); background: rgba(196,120,58,0.04); }
+    .upload-zone input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+    .upload-icon { font-size: 1.7rem; margin-bottom: 6px; }
+    .upload-zone strong { font-size: 0.88rem; display: block; margin-bottom: 4px; }
+    .upload-zone p { font-size: 0.76rem; color: var(--gris); }
+
+    .spinner { display: inline-block; width: 18px; height: 18px; border: 2px solid rgba(255,255,255,0.25); border-top-color: #fff; border-radius: 50%; animation: spin .7s linear infinite; vertical-align: middle; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .btn-loading { opacity: 0.7; pointer-events: none; }
+
+    #recaptcha-container { display: none; }
+
+    @keyframes fadeUp { from { opacity:0; transform:translateY(18px); } to { opacity:1; transform:none; } }
+  </style>
+</head>
+<body>
+
+<div class="notify-bar" id="notifyBar"><span id="notifyMsg"></span></div>
+
+<nav>
+  <div class="logo">GANDHI<span>.</span></div>
+  <button class="nav-btn" onclick="openModal()" id="navBtn">S'inscrire</button>
+</nav>
+
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-pattern"></div>
+  <div class="hero-glow"></div>
+  <div class="hero-content">
+    <div class="badge">Covoiturage Interurbain · Sénégal</div>
+    <h1>Voyagez <span class="accent">ensemble</span>,<br>partout au <span class="accent2">Sénégal</span>.</h1>
+    <p class="hero-sub">Trouvez ou proposez un trajet entre particuliers. Prise en charge à domicile. Inscription gratuite, rapide et simple.</p>
+    <div class="cta-group">
+      <a href="recherche.html" class="btn-primary">🔍 Trouver un trajet</a>
+      <button class="btn-secondary" onclick="openModal()">🚗 Proposer un trajet</button>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="stat-num" id="statTrajets">—</div><div class="stat-label">Trajets</div></div>
+      <div class="stat"><div class="stat-num" id="statConducteurs">—</div><div class="stat-label">Conducteurs</div></div>
+      <div class="stat"><div class="stat-num">0 F</div><div class="stat-label">Pour passagers</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="section-title">Simple, Rapide, Accessible.</div>
+  <div class="section-sub">Conçu pour le Sénégal, par des Sénégalais.</div>
+  <div class="features-grid">
+    <div class="feature-card"><div class="feature-icon">🏠</div><h3>Prise à domicile</h3><p>Le conducteur vient vous chercher dans votre quartier.</p></div>
+    <div class="feature-card"><div class="feature-icon">📱</div><h3>Inscription SMS</h3><p>Juste votre numéro, un code à 6 chiffres, c'est tout.</p></div>
+    <div class="feature-card"><div class="feature-icon">🎁</div><h3>Lancement gratuit</h3><p>Publiez vos annonces gratuitement pendant toute la période de lancement.</p></div>
+    <div class="feature-card"><div class="feature-icon">🔒</div><h3>Contact sécurisé</h3><p>Numéro du conducteur visible uniquement après connexion.</p></div>
+    <div class="feature-card"><div class="feature-icon">⚡</div><h3>Publication rapide</h3><p>Annonce en ligne en moins de 3 minutes.</p></div>
+    <div class="feature-card"><div class="feature-icon">🗺️</div><h3>Toutes les villes</h3><p>Dakar, Thiès, Saint-Louis, Ziguinchor et plus.</p></div>
+  </div>
+</section>
+
+<section class="section how-bg">
+  <div class="section-title">Comment ça marche ?</div>
+  <div class="section-sub">Deux rôles, une expérience fluide.</div>
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('conducteur', this)">🚗 Conducteur</button>
+    <button class="tab" onclick="switchTab('passager', this)">🧍 Passager</button>
+  </div>
+  <div class="steps active" id="steps-conducteur">
+    <div class="step"><div class="step-num">1</div><div class="step-text"><h4>Créez votre compte conducteur</h4><p>Numéro de téléphone + code SMS, puis uploadez votre CNI, permis et photo du véhicule.</p></div></div>
+    <div class="step"><div class="step-num">2</div><div class="step-text"><h4>Publiez votre annonce</h4><p>Renseignez le trajet, l'heure, le nombre de places, le prix et la marque du véhicule.</p></div></div>
+    <div class="step"><div class="step-num">3</div><div class="step-text"><h4>Publiez gratuitement 🎁</h4><p>Pendant la période de lancement, la publication est 100% gratuite.</p></div></div>
+    <div class="step"><div class="step-num">4</div><div class="step-text"><h4>Recevez les passagers</h4><p>Les passagers vous contactent directement par téléphone ou WhatsApp.</p></div></div>
+  </div>
+  <div class="steps" id="steps-passager">
+    <div class="step"><div class="step-num">1</div><div class="step-text"><h4>Inscrivez-vous gratuitement</h4><p>Juste votre numéro et un code SMS. Aucune pièce d'identité requise.</p></div></div>
+    <div class="step"><div class="step-num">2</div><div class="step-text"><h4>Recherchez un trajet</h4><p>Filtrez par ville de départ, ville d'arrivée, date et heure souhaitée.</p></div></div>
+    <div class="step"><div class="step-num">3</div><div class="step-text"><h4>Contactez le conducteur</h4><p>Appelez ou envoyez un WhatsApp directement depuis l'annonce.</p></div></div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="section-title">Tarification</div>
+  <div class="section-sub">Transparente et accessible.</div>
+  <div class="pricing-grid">
+    <div class="price-card">
+      <h3>🚗 Conducteur</h3>
+      <div class="price-num">GRATUIT</div>
+      <div class="price-sub">pendant la période de lancement 🎁</div>
+      <p style="font-size:0.8rem;color:var(--gris);margin-top:12px">Publiez autant d'annonces que vous voulez.</p>
+    </div>
+    <div class="price-card">
+      <h3>🧍 Passager</h3>
+      <div class="price-num">GRATUIT</div>
+      <div class="price-sub">toujours gratuit</div>
+      <p style="font-size:0.8rem;color:var(--gris);margin-top:12px">Inscription, recherche et contact — 100% gratuit.</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-logo">GANDHI.</div>
+  <div class="footer-sub">Covoiturage interurbain entre particuliers au Sénégal</div>
+  <div class="footer-divider"></div>
+  <div class="footer-contact">
+    <div class="footer-contact-title">Nous contacter</div>
+    <a href="mailto:gandhitransport221@gmail.com" class="footer-link footer-link-email">
+      📧 gandhitransport221@gmail.com
+    </a>
+    <a href="https://wa.me/221761707776" target="_blank" class="footer-link footer-link-wa">
+      💬 WhatsApp : <strong>76 170 77 76</strong>
+    </a>
+  </div>
+  <div class="footer-copy">© 2025 Gandhi · Tous droits réservés</div>
+</footer>
+
+<div id="recaptcha-container"></div>
+
+<div class="modal-overlay" id="modalOverlay" onclick="closeModalOutside(event)">
+  <div class="modal-sheet">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+
+    <div id="step0">
+      <h2>Bienvenue sur Gandhi</h2>
+      <p class="modal-sub">Choisissez votre rôle pour commencer.</p>
+      <div class="role-grid">
+        <button class="role-btn conducteur" id="roleCondu" onclick="selectRole('conducteur')">
+          <span class="role-icon">🚗</span>
+          <span class="role-name">Conducteur</span>
+          <span class="role-desc">Je propose des trajets</span>
+        </button>
+        <button class="role-btn passager" id="rolePass" onclick="selectRole('passager')">
+          <span class="role-icon">🧍</span>
+          <span class="role-name">Passager</span>
+          <span class="role-desc">Je cherche un trajet</span>
+        </button>
+      </div>
+      <button class="btn-primary" style="width:100%" onclick="goToStep1()">Continuer →</button>
+    </div>
+
+    <div id="step1" style="display:none">
+      <div class="step-indicator">
+        <div class="step-dot done"></div>
+        <div class="step-dot active"></div>
+        <div class="step-dot" id="dot2c"></div>
+        <div class="step-dot" id="dot3c" style="display:none"></div>
+      </div>
+      <h2>Vos informations</h2>
+      <p class="modal-sub">Remplissez vos coordonnées pour créer votre compte.</p>
+      <div class="form-group">
+        <label>Prénom *</label>
+        <input type="text" id="prenomInput" placeholder="ex : Moussa" />
+      </div>
+      <div class="form-group">
+        <label>Nom *</label>
+        <input type="text" id="nomInput" placeholder="ex : Diallo" />
+      </div>
+      <div class="form-group">
+        <label>Numéro de téléphone *</label>
+        <input type="tel" id="phoneInput" placeholder="+221 77 000 00 00" />
+      </div>
+      <button class="btn-primary" style="width:100%;margin-top:8px" id="sendSMSBtn" onclick="sendSMS()">Recevoir le code SMS →</button>
+    </div>
+
+    <div id="step2" style="display:none">
+      <div class="step-indicator">
+        <div class="step-dot done"></div>
+        <div class="step-dot done"></div>
+        <div class="step-dot active"></div>
+        <div class="step-dot" id="dot3c2" style="display:none"></div>
+      </div>
+      <h2>Code de vérification</h2>
+      <p class="modal-sub">Entrez le code à 6 chiffres reçu par SMS.</p>
+      <div class="otp-row">
+        <input type="tel" class="otp-input" id="otp0" maxlength="1" oninput="otpNext(0)" />
+        <input type="tel" class="otp-input" id="otp1" maxlength="1" oninput="otpNext(1)" />
+        <input type="tel" class="otp-input" id="otp2" maxlength="1" oninput="otpNext(2)" />
+        <input type="tel" class="otp-input" id="otp3" maxlength="1" oninput="otpNext(3)" />
+        <input type="tel" class="otp-input" id="otp4" maxlength="1" oninput="otpNext(4)" />
+        <input type="tel" class="otp-input" id="otp5" maxlength="1" oninput="otpNext(5)" />
+      </div>
+      <button class="btn-primary" style="width:100%;margin-top:20px" id="verifyBtn" onclick="verifyOTP()">Vérifier le code →</button>
+      <p style="text-align:center;margin-top:12px;font-size:0.8rem;color:var(--gris)">
+        Code reçu par SMS sur <strong style="color:var(--terre)" id="phoneDisplay"></strong>
+      </p>
+      <p style="text-align:center;margin-top:8px;font-size:0.78rem">
+        <a href="#" onclick="resendCode(); return false;" style="color:var(--vert-light)">Renvoyer le code</a>
+      </p>
+    </div>
+
+    <div id="step3" style="display:none">
+      <div class="step-indicator">
+        <div class="step-dot done"></div>
+        <div class="step-dot done"></div>
+        <div class="step-dot done"></div>
+        <div class="step-dot active"></div>
+      </div>
+      <h2>Documents requis</h2>
+      <p class="modal-sub">Uploadez vos pièces pour activer votre compte conducteur.</p>
+      <div class="form-group">
+        <label>📄 Photo d'identité (recto)</label>
+        <div class="upload-zone" id="cniZone">
+          <input type="file" accept="image/*" onchange="fileUploaded('cniZone', this)" />
+          <div class="upload-icon">🪪</div>
+          <strong>Appuyer pour choisir</strong>
+          <p>CNI ou passeport — recto uniquement</p>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>🚘 Permis de conduire</label>
+        <div class="upload-zone" id="permisZone">
+          <input type="file" accept="image/*" onchange="fileUploaded('permisZone', this)" />
+          <div class="upload-icon">📋</div>
+          <strong>Appuyer pour choisir</strong>
+          <p>Photo de votre permis</p>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>🚗 Photo du véhicule</label>
+        <div class="upload-zone" id="vehicleZone">
+          <input type="file" accept="image/*" onchange="fileUploaded('vehicleZone', this)" />
+          <div class="upload-icon">🚙</div>
+          <strong>Appuyer pour choisir</strong>
+          <p>Photo de votre voiture</p>
+        </div>
+      </div>
+      <button class="btn-primary" style="width:100%;margin-top:8px" id="finishBtn" onclick="finishSignup()">Accéder au tableau de bord →</button>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { getAuth, RecaptchaVerifier, signInWithPhoneNumber, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  import { getFirestore, doc, setDoc, getDoc, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+  import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyCEQCpB69WR4qRAbQ9qfIcCsPRm9-l_Lw8",
+    authDomain: "gandhi-aa31c.firebaseapp.com",
+    projectId: "gandhi-aa31c",
+    storageBucket: "gandhi-aa31c.firebasestorage.app",
+    messagingSenderId: "529079046689",
+    appId: "1:529079046689:web:f939f9ebf4ad1f0cad4960"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+  const storage = getStorage(app);
+
+  let confirmationResult = null;
+  let currentRole = '';
+  let uploads = { cniZone: null, permisZone: null, vehicleZone: null };
+
+  onAuthStateChanged(auth, async (user) => {
+    if (user) {
+      const navBtn = document.getElementById('navBtn');
+      const userDoc = await getDoc(doc(db, 'users', user.uid));
+      if (userDoc.exists()) {
+        const data = userDoc.data();
+        navBtn.textContent = data.prenom || 'Mon compte';
+        navBtn.onclick = null;
+        navBtn.addEventListener('click', () => {
+          window.location.href = data.role === 'conducteur' ? 'dashboard.html' : 'recherche.html';
+        });
+      }
+    }
+  });
+
+  async function loadStats() {
+    try {
+      const trajetsSnap = await getDocs(collection(db, 'annonces'));
+      const usersSnap = await getDocs(collection(db, 'users'));
+      const conducteurs = usersSnap.docs.filter(d => d.data().role === 'conducteur').length;
+      document.getElementById('statTrajets').textContent = trajetsSnap.size;
+      document.getElementById('statConducteurs').textContent = conducteurs;
+    } catch(e) {
+      document.getElementById('statTrajets').textContent = '0';
+      document.getElementById('statConducteurs').textContent = '0';
+    }
+  }
+  loadStats();
+
+  window.openModal = function(role) {
+    document.getElementById('modalOverlay').classList.add('open');
+    if (role) selectRole(role);
+  };
+  window.closeModal = function() { document.getElementById('modalOverlay').classList.remove('open'); };
+  window.closeModalOutside = function(e) { if (e.target === document.getElementById('modalOverlay')) window.closeModal(); };
+
+  window.selectRole = function(role) {
+    currentRole = role;
+    document.getElementById('roleCondu').classList.toggle('selected', role === 'conducteur');
+    document.getElementById('rolePass').classList.toggle('selected', role === 'passager');
+  };
+
+  window.goToStep1 = function() {
+    if (!currentRole) { notify('Choisissez un rôle', 'error'); return; }
+    show('step0', false); show('step1', true);
+    if (currentRole === 'conducteur') {
+      document.getElementById('dot2c').style.display = '';
+      document.getElementById('dot3c').style.display = '';
+    }
+    if (!window.recaptchaVerifier) {
+      window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', { size: 'invisible' });
+    }
+  };
+
+  window.sendSMS = async function() {
+    const prenom = document.getElementById('prenomInput').value.trim();
+    const nom = document.getElementById('nomInput').value.trim();
+    const phone = document.getElementById('phoneInput').value.trim();
+    if (!prenom) { notify('Entrez votre prénom', 'error'); return; }
+    if (!nom) { notify('Entrez votre nom', 'error'); return; }
+    if (!phone) { notify('Entrez votre numéro de téléphone', 'error'); return; }
+
+    const btn = document.getElementById('sendSMSBtn');
+    btn.innerHTML = '<span class="spinner"></span> Envoi en cours…';
+    btn.classList.add('btn-loading');
+
+    try {
+      confirmationResult = await signInWithPhoneNumber(auth, phone, window.recaptchaVerifier);
+      document.getElementById('phoneDisplay').textContent = phone;
+      show('step1', false); show('step2', true);
+      if (currentRole === 'conducteur') document.getElementById('dot3c2').style.display = '';
+      notify('✅ Code SMS envoyé !');
+    } catch(err) {
+      console.error(err);
+      notify('Erreur : ' + (err.message || 'Numéro invalide'), 'error');
+      window.recaptchaVerifier.clear();
+      window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', { size: 'invisible' });
+    } finally {
+      btn.innerHTML = 'Recevoir le code SMS →';
+      btn.classList.remove('btn-loading');
+    }
+  };
+
+  window.otpNext = function(i) {
+    const el = document.getElementById('otp' + i);
+    if (el.value.length > 1) el.value = el.value.slice(-1);
+    if (el.value.length === 1 && i < 5) document.getElementById('otp' + (i + 1)).focus();
+  };
+
+  window.verifyOTP = async function() {
+    const code = [0,1,2,3,4,5].map(i => document.getElementById('otp'+i).value).join('');
+    if (code.length < 6) { notify('Entrez les 6 chiffres du code', 'error'); return; }
+    if (!confirmationResult) { notify("Relancez l'envoi du SMS", 'error'); return; }
+
+    const btn = document.getElementById('verifyBtn');
+    btn.innerHTML = '<span class="spinner"></span> Vérification…';
+    btn.classList.add('btn-loading');
+
+    try {
+      const result = await confirmationResult.confirm(code);
+      const user = result.user;
+      const prenom = document.getElementById('prenomInput').value.trim();
+      const nom = document.getElementById('nomInput').value.trim();
+      const phone = document.getElementById('phoneInput').value.trim();
+
+      await setDoc(doc(db, 'users', user.uid), {
+        uid: user.uid, prenom, nom, phone,
+        role: currentRole, createdAt: new Date().toISOString(),
+        verified: currentRole === 'passager'
+      });
+
+      if (currentRole === 'conducteur') {
+        show('step2', false); show('step3', true);
+        notify('✅ Code vérifié ! Uploadez vos documents.');
+      } else {
+        window.closeModal();
+        notify('🎉 Compte passager créé ! Bienvenue ' + prenom + ' !');
+        setTimeout(() => window.location.href = 'recherche.html', 1800);
+      }
+    } catch(err) {
+      console.error(err);
+      notify('Code incorrect ou expiré.', 'error');
+    } finally {
+      btn.innerHTML = 'Vérifier le code →';
+      btn.classList.remove('btn-loading');
+    }
+  };
+
+  window.resendCode = async function() {
+    const phone = document.getElementById('phoneInput').value.trim();
+    if (!phone) return;
+    try {
+      if (!window.recaptchaVerifier) {
+        window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', { size: 'invisible' });
+      }
+      confirmationResult = await signInWithPhoneNumber(auth, phone, window.recaptchaVerifier);
+      notify('✅ Nouveau code envoyé !');
+    } catch(err) {
+      notify('Erreur lors du renvoi', 'error');
+    }
+  };
+
+  window.fileUploaded = function(zoneId, input) {
+    const file = input.files[0];
+    if (!file) return;
+    if (!file.type.startsWith('image/')) { notify('Veuillez sélectionner une image (JPEG, PNG, etc.)', 'error'); input.value = ''; return; }
+    if (file.size > 5 * 1024 * 1024) { notify("L'image ne doit pas dépasser 5 Mo", 'error'); input.value = ''; return; }
+    uploads[zoneId] = file;
+    const zone = document.getElementById(zoneId);
+    zone.style.borderColor = 'var(--vert-light)';
+    zone.style.background = 'rgba(82,183,136,0.06)';
+    zone.innerHTML = `<div style="color:var(--vert-light);font-size:1.5rem">✅</div><strong style="color:var(--vert-light)">${file.name}</strong>`;
+  };
+
+  window.finishSignup = async function() {
+    if (!uploads.cniZone) { notify('Veuillez uploader votre CNI', 'error'); return; }
+    if (!uploads.permisZone) { notify('Veuillez uploader votre permis', 'error'); return; }
+    if (!uploads.vehicleZone) { notify('Veuillez uploader la photo du véhicule', 'error'); return; }
+
+    const btn = document.getElementById('finishBtn');
+    btn.innerHTML = '<span class="spinner"></span> Upload en cours…';
+    btn.classList.add('btn-loading');
+
+    try {
+      const user = auth.currentUser;
+      const uid = user.uid;
+      const uploadFile = async (file, path) => {
+        const storageRef = ref(storage, path);
+        await uploadBytes(storageRef, file);
+        return await getDownloadURL(storageRef);
+      };
+      const [cniUrl, permisUrl, vehicleUrl] = await Promise.all([
+        uploadFile(uploads.cniZone, `docs/${uid}/cni`),
+        uploadFile(uploads.permisZone, `docs/${uid}/permis`),
+        uploadFile(uploads.vehicleZone, `docs/${uid}/vehicule`)
+      ]);
+      await setDoc(doc(db, 'users', uid), { cniUrl, permisUrl, vehicleUrl, documentsUploaded: true, updatedAt: new Date().toISOString() }, { merge: true });
+      window.closeModal();
+      notify('🎉 Compte conducteur créé ! Bienvenue !');
+      setTimeout(() => window.location.href = 'dashboard.html', 1800);
+    } catch(err) {
+      console.error(err);
+      notify('Erreur lors de l\'upload : ' + err.message, 'error');
+    } finally {
+      btn.innerHTML = 'Accéder au tableau de bord →';
+      btn.classList.remove('btn-loading');
+    }
+  };
+
+  function show(id, visible) { document.getElementById(id).style.display = visible ? 'block' : 'none'; }
+
+  function notify(msg, type) {
+    const bar = document.getElementById('notifyBar');
+    document.getElementById('notifyMsg').textContent = msg;
+    bar.style.background = type === 'error' ? '#c0392b' : 'var(--vert)';
+    bar.classList.add('show');
+    setTimeout(() => bar.classList.remove('show'), 3500);
+  }
+
+  window.switchTab = function(tab, btn) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('steps-conducteur').classList.toggle('active', tab === 'conducteur');
+    document.getElementById('steps-passager').classList.toggle('active', tab === 'passager');
+  };
+</script>
+</body>
+</html>
